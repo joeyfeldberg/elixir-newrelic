@@ -1,0 +1,3 @@
+%{"cure": {:hex, :cure, "0.4.1"},
+  "exprotobuf": {:hex, :exprotobuf, "1.0.0-rc1"},
+  "gpb": {:hex, :gpb, "3.18.10"}}

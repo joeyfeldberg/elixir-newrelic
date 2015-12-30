@@ -1,0 +1,45 @@
+package operation_msg;
+
+message Response {
+  required bool error = 1;
+  required int32 code = 2;
+  optional uint64 transaction_id = 3;
+}
+
+message Operation {
+  message Init {
+    required string license = 1;
+    required string app_name = 2;
+    required string language = 3;
+    required string language_version = 4;
+  }
+
+  message TransactionBegin {
+    required string name = 1;
+  }
+
+  message TransactionEnd {
+    required uint64 transaction_id = 1;
+  }
+
+  message NoticeError {
+    required uint64 transaction_id = 1;
+    required string exception_type = 2;
+    required string error_message = 3;
+    required string stack_trace = 4;
+    required string stack_frame_delimiter = 5;
+  }
+
+  enum OperationType {
+    INIT = 1;
+    TRANSACTION_BEGIN = 2;
+    TRANSACTION_END = 3;
+    TRANSACTION_NOTICE_ERROR = 4;
+  }
+
+  required OperationType type = 1;
+  optional Init init = 2;
+  optional TransactionBegin transaction_begin = 3;
+  optional TransactionEnd transaction_end = 4;
+  optional NoticeError notice_error = 5;
+}

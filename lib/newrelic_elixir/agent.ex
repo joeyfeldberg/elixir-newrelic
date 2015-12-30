@@ -1,4 +1,4 @@
-defmodule NewrelicElixir.Agent do
+defmodule ElixirNewrelic.Agent do
   def send_msg(server, bytes) do
     server |> Cure.send_data bytes, :once
   end

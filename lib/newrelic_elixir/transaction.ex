@@ -1,12 +1,12 @@
-defmodule NewrelicElixir.Transaction do
-  alias NewrelicElixir.Agent
-  alias NewrelicElixir.Messages
+defmodule ElixirNewrelic.Transaction do
+  alias ElixirNewrelic.Agent
+  alias ElixirNewrelic.Messages
 
-  @timeout Application.get_env(:newrelic_elixir, :timeout, 500)
+  @timeout Application.get_env(:elixir_newrelic, :timeout, 500)
 
   def init(server) do
-    license = Application.get_env(:newrelic_elixir, :license)
-    app_name = Application.get_env(:newrelic_elixir, :app_name)
+    license = Application.get_env(:elixir_newrelic, :license)
+    app_name = Application.get_env(:elixir_newrelic, :app_name)
     sub = Messages.Operation.Init.new(license: license,
                                       app_name: app_name,
                                       language: "Elixir",

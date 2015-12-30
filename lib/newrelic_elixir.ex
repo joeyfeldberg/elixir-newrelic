@@ -1,4 +1,4 @@
-defmodule NewrelicElixir do
+defmodule ElixirNewrelic do
   require Logger
 
   @spec start_link() :: {:ok, pid} | {:error, term}

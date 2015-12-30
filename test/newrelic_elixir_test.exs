@@ -1,4 +1,4 @@
-defmodule NewrelicElixirTest do
+defmodule ElixirNewrelicTest do
   use ExUnit.Case
-  doctest NewrelicElixir
+  doctest ElixirNewrelic
 end

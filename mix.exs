@@ -6,7 +6,6 @@ defmodule ElixirNewrelic.Mixfile do
      version: "0.2.0",
      elixir: "~> 1.1.0",
      description: "New Relic Elixir Agent",
-     compilers: Mix.compilers ++ [:cure, :"cure.deps"],
      deps: deps,
      package: package]
   end
@@ -20,7 +19,8 @@ defmodule ElixirNewrelic.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Joey Feldberg"],
+    [files: ~w(lib c_src mix.exs README* readme* LICENSE* license*),
+     maintainers: ["Joey Feldberg"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/joeyfeldberg/elixir-newrelic"}]
   end

@@ -4,4 +4,4 @@
 erl_crash.dump
 *.ez
 .vagrant
-newrelic
+/c_src/newrelic

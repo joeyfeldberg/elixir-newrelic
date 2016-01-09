@@ -11,7 +11,7 @@ This is a pre-release, only a simple transaction and error tracing is currently 
 ### Add the Cure dependency to your mix.exs file:
 ```elixir
 def deps do
-	[{:elixir_newrelic, "~> 0.2.1"}]
+  [{:elixir_newrelic, "~> 0.2.1"}]
 end
 ```
 ### Fetch & compile dependencies
@@ -56,6 +56,7 @@ config :elixir_newrelic,
 
 ```
 {:ok, server} = ElixirNewrelic.start_link
+{:ok, init} = ElixirNewrelic.Transaction.init(newrelic)
 {:ok, response} = ElixirNewrelic.Transaction.transaction_begin(server, "name")
 exception_type = "Error"
 error_message = "Something went wrong"

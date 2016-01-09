@@ -38,10 +38,10 @@ This will also run the Makefile and create the newrelic application file
 
 ### install dependencies
 
-Install libcurl
-Install openssl
-Install protobuf (used for Elixir to C++ communication)
-copy the New Relic shared object to /usr/local/lib (can also be found in the release)
+1. Install libcurl
+2. Install openssl
+3. Install protobuf (used for Elixir to C++ communication)
+4. Copy the New Relic shared object to /usr/local/lib (can also be found in the release)
 
 ### configure the agent
 

@@ -1,6 +1,6 @@
 defmodule ElixirNewrelic.Agent do
   def send_msg(server, bytes) do
-    server |> Cure.send_data bytes, :once
+    Cure.send_data(server, bytes, :once)
   end
 
   def recv(timeout) do

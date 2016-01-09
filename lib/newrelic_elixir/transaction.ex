@@ -43,7 +43,9 @@ defmodule ElixirNewrelic.Transaction do
 
   def send_msg(server, msg) do
      Agent.send_msg(server, Messages.Operation.encode(msg))
-     {:ok, res} = Agent.recv(500)
-     {:ok, Messages.Response.decode(res)}
+     case Agent.recv(5000) do
+       {:ok, res} -> {:ok, Messages.Response.decode(res)}
+       {:error, reason} -> {:error, reason}
+     end
   end
 end

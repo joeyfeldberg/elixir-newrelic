@@ -7,8 +7,6 @@ defmodule ElixirNewrelic.Agent do
     receive do
       {:cure_data, msg} ->
         {:ok, msg}
-      _ ->
-        {:error, :no_response}
       after timeout ->
         {:error, :timeout}
     end

@@ -15,7 +15,7 @@ def deps do
 end
 ```
 ### Fetch & compile dependencies
-```
+```sh
 mix deps.get
 mix deps.compile
 ```
@@ -27,7 +27,7 @@ In the releases there is a 'newrelic' application or you can compile it from sou
 #### compiling from source
 
 git clone this repository.
-```
+```sh
 mix deps.get
 mix deps.compile
 mix compile
@@ -45,7 +45,7 @@ This will also run the Makefile and create the newrelic application file
 
 ### configure the agent
 
-```
+```elixir
 config :elixir_newrelic,
   newrelic_location: "/absolute/path/to/newrelic/application",
   license: "my_newrelic_license_key",
@@ -54,7 +54,7 @@ config :elixir_newrelic,
 
 ### In Elixir
 
-```
+```elixir
 {:ok, server} = ElixirNewrelic.start_link
 {:ok, init} = ElixirNewrelic.Transaction.init(newrelic)
 {:ok, response} = ElixirNewrelic.Transaction.transaction_begin(server, "name")

@@ -37,19 +37,37 @@ void protobuf_ShutdownFile_operation_5fmsg_2eproto();
 class Response;
 class Operation;
 class Operation_Init;
+class Operation_EnableInstrumentation;
+class Operation_RecordMetric;
+class Operation_RecondCPUUsage;
+class Operation_RecondMemoryUsage;
 class Operation_TransactionBegin;
 class Operation_TransactionEnd;
-class Operation_NoticeError;
+class Operation_TransactionNoticeError;
+class Operation_TransactionAddAttribute;
+class Operation_SegmentGenericBegin;
+class Operation_SegmentDatastoreBegin;
+class Operation_SegmentExternalBegin;
+class Operation_SegmentEnd;
 
 enum Operation_OperationType {
   Operation_OperationType_INIT = 1,
-  Operation_OperationType_TRANSACTION_BEGIN = 2,
-  Operation_OperationType_TRANSACTION_END = 3,
-  Operation_OperationType_TRANSACTION_NOTICE_ERROR = 4
+  Operation_OperationType_ENABLE_INSTRUMENTATION = 2,
+  Operation_OperationType_RECORD_METRIC = 3,
+  Operation_OperationType_RECORD_CPU_USAGE = 4,
+  Operation_OperationType_RECORD_MEMORY_USAGE = 5,
+  Operation_OperationType_TRANSACTION_BEGIN = 6,
+  Operation_OperationType_TRANSACTION_END = 7,
+  Operation_OperationType_TRANSACTION_NOTICE_ERROR = 8,
+  Operation_OperationType_TRANSACTION_ADD_ATTRIBUTE = 9,
+  Operation_OperationType_SEGMENT_GENERIC_BEGIN = 10,
+  Operation_OperationType_SEGMENT_DATASTORE_BEGIN = 11,
+  Operation_OperationType_SEGMENT_EXTERNAL_BEGIN = 12,
+  Operation_OperationType_SEGMENT_END = 13
 };
 bool Operation_OperationType_IsValid(int value);
 const Operation_OperationType Operation_OperationType_OperationType_MIN = Operation_OperationType_INIT;
-const Operation_OperationType Operation_OperationType_OperationType_MAX = Operation_OperationType_TRANSACTION_NOTICE_ERROR;
+const Operation_OperationType Operation_OperationType_OperationType_MAX = Operation_OperationType_SEGMENT_END;
 const int Operation_OperationType_OperationType_ARRAYSIZE = Operation_OperationType_OperationType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* Operation_OperationType_descriptor();
@@ -61,6 +79,27 @@ inline bool Operation_OperationType_Parse(
     const ::std::string& name, Operation_OperationType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<Operation_OperationType>(
     Operation_OperationType_descriptor(), name, value);
+}
+enum Operation_SegmentDatastoreOperation {
+  Operation_SegmentDatastoreOperation_SELECT = 1,
+  Operation_SegmentDatastoreOperation_INSERT = 2,
+  Operation_SegmentDatastoreOperation_UPDATE = 3,
+  Operation_SegmentDatastoreOperation_DELETE = 4
+};
+bool Operation_SegmentDatastoreOperation_IsValid(int value);
+const Operation_SegmentDatastoreOperation Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_MIN = Operation_SegmentDatastoreOperation_SELECT;
+const Operation_SegmentDatastoreOperation Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_MAX = Operation_SegmentDatastoreOperation_DELETE;
+const int Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_ARRAYSIZE = Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Operation_SegmentDatastoreOperation_descriptor();
+inline const ::std::string& Operation_SegmentDatastoreOperation_Name(Operation_SegmentDatastoreOperation value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Operation_SegmentDatastoreOperation_descriptor(), value);
+}
+inline bool Operation_SegmentDatastoreOperation_Parse(
+    const ::std::string& name, Operation_SegmentDatastoreOperation* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Operation_SegmentDatastoreOperation>(
+    Operation_SegmentDatastoreOperation_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -131,12 +170,31 @@ class Response : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 code() const;
   inline void set_code(::google::protobuf::int32 value);
 
-  // optional uint64 transaction_id = 3;
+  // optional string error_msg = 3;
+  inline bool has_error_msg() const;
+  inline void clear_error_msg();
+  static const int kErrorMsgFieldNumber = 3;
+  inline const ::std::string& error_msg() const;
+  inline void set_error_msg(const ::std::string& value);
+  inline void set_error_msg(const char* value);
+  inline void set_error_msg(const char* value, size_t size);
+  inline ::std::string* mutable_error_msg();
+  inline ::std::string* release_error_msg();
+  inline void set_allocated_error_msg(::std::string* error_msg);
+
+  // optional uint64 transaction_id = 4;
   inline bool has_transaction_id() const;
   inline void clear_transaction_id();
-  static const int kTransactionIdFieldNumber = 3;
+  static const int kTransactionIdFieldNumber = 4;
   inline ::google::protobuf::uint64 transaction_id() const;
   inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // optional uint64 segment_id = 5;
+  inline bool has_segment_id() const;
+  inline void clear_segment_id();
+  static const int kSegmentIdFieldNumber = 5;
+  inline ::google::protobuf::uint64 segment_id() const;
+  inline void set_segment_id(::google::protobuf::uint64 value);
 
   // @@protoc_insertion_point(class_scope:operation_msg.Response)
  private:
@@ -144,8 +202,12 @@ class Response : public ::google::protobuf::Message {
   inline void clear_has_error();
   inline void set_has_code();
   inline void clear_has_code();
+  inline void set_has_error_msg();
+  inline void clear_has_error_msg();
   inline void set_has_transaction_id();
   inline void clear_has_transaction_id();
+  inline void set_has_segment_id();
+  inline void clear_has_segment_id();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -153,7 +215,9 @@ class Response : public ::google::protobuf::Message {
   mutable int _cached_size_;
   bool error_;
   ::google::protobuf::int32 code_;
+  ::std::string* error_msg_;
   ::google::protobuf::uint64 transaction_id_;
+  ::google::protobuf::uint64 segment_id_;
   friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
   friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
   friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
@@ -292,6 +356,347 @@ class Operation_Init : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class Operation_EnableInstrumentation : public ::google::protobuf::Message {
+ public:
+  Operation_EnableInstrumentation();
+  virtual ~Operation_EnableInstrumentation();
+
+  Operation_EnableInstrumentation(const Operation_EnableInstrumentation& from);
+
+  inline Operation_EnableInstrumentation& operator=(const Operation_EnableInstrumentation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_EnableInstrumentation& default_instance();
+
+  void Swap(Operation_EnableInstrumentation* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_EnableInstrumentation* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_EnableInstrumentation& from);
+  void MergeFrom(const Operation_EnableInstrumentation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required bool set_enabled = 1;
+  inline bool has_set_enabled() const;
+  inline void clear_set_enabled();
+  static const int kSetEnabledFieldNumber = 1;
+  inline bool set_enabled() const;
+  inline void set_set_enabled(bool value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.EnableInstrumentation)
+ private:
+  inline void set_has_set_enabled();
+  inline void clear_has_set_enabled();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  bool set_enabled_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_EnableInstrumentation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_RecordMetric : public ::google::protobuf::Message {
+ public:
+  Operation_RecordMetric();
+  virtual ~Operation_RecordMetric();
+
+  Operation_RecordMetric(const Operation_RecordMetric& from);
+
+  inline Operation_RecordMetric& operator=(const Operation_RecordMetric& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_RecordMetric& default_instance();
+
+  void Swap(Operation_RecordMetric* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_RecordMetric* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_RecordMetric& from);
+  void MergeFrom(const Operation_RecordMetric& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required double value = 2;
+  inline bool has_value() const;
+  inline void clear_value();
+  static const int kValueFieldNumber = 2;
+  inline double value() const;
+  inline void set_value(double value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.RecordMetric)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_value();
+  inline void clear_has_value();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::std::string* name_;
+  double value_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_RecordMetric* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_RecondCPUUsage : public ::google::protobuf::Message {
+ public:
+  Operation_RecondCPUUsage();
+  virtual ~Operation_RecondCPUUsage();
+
+  Operation_RecondCPUUsage(const Operation_RecondCPUUsage& from);
+
+  inline Operation_RecondCPUUsage& operator=(const Operation_RecondCPUUsage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_RecondCPUUsage& default_instance();
+
+  void Swap(Operation_RecondCPUUsage* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_RecondCPUUsage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_RecondCPUUsage& from);
+  void MergeFrom(const Operation_RecondCPUUsage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double cpu_user_time_seconds = 1;
+  inline bool has_cpu_user_time_seconds() const;
+  inline void clear_cpu_user_time_seconds();
+  static const int kCpuUserTimeSecondsFieldNumber = 1;
+  inline double cpu_user_time_seconds() const;
+  inline void set_cpu_user_time_seconds(double value);
+
+  // required double cpu_usage_percent = 2;
+  inline bool has_cpu_usage_percent() const;
+  inline void clear_cpu_usage_percent();
+  static const int kCpuUsagePercentFieldNumber = 2;
+  inline double cpu_usage_percent() const;
+  inline void set_cpu_usage_percent(double value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.RecondCPUUsage)
+ private:
+  inline void set_has_cpu_user_time_seconds();
+  inline void clear_has_cpu_user_time_seconds();
+  inline void set_has_cpu_usage_percent();
+  inline void clear_has_cpu_usage_percent();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double cpu_user_time_seconds_;
+  double cpu_usage_percent_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_RecondCPUUsage* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_RecondMemoryUsage : public ::google::protobuf::Message {
+ public:
+  Operation_RecondMemoryUsage();
+  virtual ~Operation_RecondMemoryUsage();
+
+  Operation_RecondMemoryUsage(const Operation_RecondMemoryUsage& from);
+
+  inline Operation_RecondMemoryUsage& operator=(const Operation_RecondMemoryUsage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_RecondMemoryUsage& default_instance();
+
+  void Swap(Operation_RecondMemoryUsage* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_RecondMemoryUsage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_RecondMemoryUsage& from);
+  void MergeFrom(const Operation_RecondMemoryUsage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required double memory_megabytes = 1;
+  inline bool has_memory_megabytes() const;
+  inline void clear_memory_megabytes();
+  static const int kMemoryMegabytesFieldNumber = 1;
+  inline double memory_megabytes() const;
+  inline void set_memory_megabytes(double value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.RecondMemoryUsage)
+ private:
+  inline void set_has_memory_megabytes();
+  inline void clear_has_memory_megabytes();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  double memory_megabytes_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_RecondMemoryUsage* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Operation_TransactionBegin : public ::google::protobuf::Message {
  public:
   Operation_TransactionBegin();
@@ -357,16 +762,66 @@ class Operation_TransactionBegin : public ::google::protobuf::Message {
   inline ::std::string* release_name();
   inline void set_allocated_name(::std::string* name);
 
+  // optional bool set_type_web = 2;
+  inline bool has_set_type_web() const;
+  inline void clear_set_type_web();
+  static const int kSetTypeWebFieldNumber = 2;
+  inline bool set_type_web() const;
+  inline void set_set_type_web(bool value);
+
+  // optional string category = 3;
+  inline bool has_category() const;
+  inline void clear_category();
+  static const int kCategoryFieldNumber = 3;
+  inline const ::std::string& category() const;
+  inline void set_category(const ::std::string& value);
+  inline void set_category(const char* value);
+  inline void set_category(const char* value, size_t size);
+  inline ::std::string* mutable_category();
+  inline ::std::string* release_category();
+  inline void set_allocated_category(::std::string* category);
+
+  // optional string request_url = 4;
+  inline bool has_request_url() const;
+  inline void clear_request_url();
+  static const int kRequestUrlFieldNumber = 4;
+  inline const ::std::string& request_url() const;
+  inline void set_request_url(const ::std::string& value);
+  inline void set_request_url(const char* value);
+  inline void set_request_url(const char* value, size_t size);
+  inline ::std::string* mutable_request_url();
+  inline ::std::string* release_request_url();
+  inline void set_allocated_request_url(::std::string* request_url);
+
+  // optional int32 max_trace_segments = 5;
+  inline bool has_max_trace_segments() const;
+  inline void clear_max_trace_segments();
+  static const int kMaxTraceSegmentsFieldNumber = 5;
+  inline ::google::protobuf::int32 max_trace_segments() const;
+  inline void set_max_trace_segments(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:operation_msg.Operation.TransactionBegin)
  private:
   inline void set_has_name();
   inline void clear_has_name();
+  inline void set_has_set_type_web();
+  inline void clear_has_set_type_web();
+  inline void set_has_category();
+  inline void clear_has_category();
+  inline void set_has_request_url();
+  inline void clear_has_request_url();
+  inline void set_has_max_trace_segments();
+  inline void clear_has_max_trace_segments();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::std::string* name_;
+  ::std::string* category_;
+  bool set_type_web_;
+  ::google::protobuf::int32 max_trace_segments_;
+  ::std::string* request_url_;
   friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
   friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
   friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
@@ -455,14 +910,14 @@ class Operation_TransactionEnd : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class Operation_NoticeError : public ::google::protobuf::Message {
+class Operation_TransactionNoticeError : public ::google::protobuf::Message {
  public:
-  Operation_NoticeError();
-  virtual ~Operation_NoticeError();
+  Operation_TransactionNoticeError();
+  virtual ~Operation_TransactionNoticeError();
 
-  Operation_NoticeError(const Operation_NoticeError& from);
+  Operation_TransactionNoticeError(const Operation_TransactionNoticeError& from);
 
-  inline Operation_NoticeError& operator=(const Operation_NoticeError& from) {
+  inline Operation_TransactionNoticeError& operator=(const Operation_TransactionNoticeError& from) {
     CopyFrom(from);
     return *this;
   }
@@ -476,17 +931,17 @@ class Operation_NoticeError : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const Operation_NoticeError& default_instance();
+  static const Operation_TransactionNoticeError& default_instance();
 
-  void Swap(Operation_NoticeError* other);
+  void Swap(Operation_TransactionNoticeError* other);
 
   // implements Message ----------------------------------------------
 
-  Operation_NoticeError* New() const;
+  Operation_TransactionNoticeError* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Operation_NoticeError& from);
-  void MergeFrom(const Operation_NoticeError& from);
+  void CopyFrom(const Operation_TransactionNoticeError& from);
+  void MergeFrom(const Operation_TransactionNoticeError& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -563,7 +1018,7 @@ class Operation_NoticeError : public ::google::protobuf::Message {
   inline ::std::string* release_stack_frame_delimiter();
   inline void set_allocated_stack_frame_delimiter(::std::string* stack_frame_delimiter);
 
-  // @@protoc_insertion_point(class_scope:operation_msg.Operation.NoticeError)
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.TransactionNoticeError)
  private:
   inline void set_has_transaction_id();
   inline void clear_has_transaction_id();
@@ -590,7 +1045,557 @@ class Operation_NoticeError : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
 
   void InitAsDefaultInstance();
-  static Operation_NoticeError* default_instance_;
+  static Operation_TransactionNoticeError* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_TransactionAddAttribute : public ::google::protobuf::Message {
+ public:
+  Operation_TransactionAddAttribute();
+  virtual ~Operation_TransactionAddAttribute();
+
+  Operation_TransactionAddAttribute(const Operation_TransactionAddAttribute& from);
+
+  inline Operation_TransactionAddAttribute& operator=(const Operation_TransactionAddAttribute& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_TransactionAddAttribute& default_instance();
+
+  void Swap(Operation_TransactionAddAttribute* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_TransactionAddAttribute* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_TransactionAddAttribute& from);
+  void MergeFrom(const Operation_TransactionAddAttribute& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 transaction_id = 1;
+  inline bool has_transaction_id() const;
+  inline void clear_transaction_id();
+  static const int kTransactionIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 transaction_id() const;
+  inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // required string name = 2;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 2;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required string value = 3;
+  inline bool has_value() const;
+  inline void clear_value();
+  static const int kValueFieldNumber = 3;
+  inline const ::std::string& value() const;
+  inline void set_value(const ::std::string& value);
+  inline void set_value(const char* value);
+  inline void set_value(const char* value, size_t size);
+  inline ::std::string* mutable_value();
+  inline ::std::string* release_value();
+  inline void set_allocated_value(::std::string* value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.TransactionAddAttribute)
+ private:
+  inline void set_has_transaction_id();
+  inline void clear_has_transaction_id();
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_value();
+  inline void clear_has_value();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 transaction_id_;
+  ::std::string* name_;
+  ::std::string* value_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_TransactionAddAttribute* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_SegmentGenericBegin : public ::google::protobuf::Message {
+ public:
+  Operation_SegmentGenericBegin();
+  virtual ~Operation_SegmentGenericBegin();
+
+  Operation_SegmentGenericBegin(const Operation_SegmentGenericBegin& from);
+
+  inline Operation_SegmentGenericBegin& operator=(const Operation_SegmentGenericBegin& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_SegmentGenericBegin& default_instance();
+
+  void Swap(Operation_SegmentGenericBegin* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_SegmentGenericBegin* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_SegmentGenericBegin& from);
+  void MergeFrom(const Operation_SegmentGenericBegin& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 transaction_id = 1;
+  inline bool has_transaction_id() const;
+  inline void clear_transaction_id();
+  static const int kTransactionIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 transaction_id() const;
+  inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // optional uint64 parent_segment_id = 2;
+  inline bool has_parent_segment_id() const;
+  inline void clear_parent_segment_id();
+  static const int kParentSegmentIdFieldNumber = 2;
+  inline ::google::protobuf::uint64 parent_segment_id() const;
+  inline void set_parent_segment_id(::google::protobuf::uint64 value);
+
+  // required string name = 3;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 3;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.SegmentGenericBegin)
+ private:
+  inline void set_has_transaction_id();
+  inline void clear_has_transaction_id();
+  inline void set_has_parent_segment_id();
+  inline void clear_has_parent_segment_id();
+  inline void set_has_name();
+  inline void clear_has_name();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 transaction_id_;
+  ::google::protobuf::uint64 parent_segment_id_;
+  ::std::string* name_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_SegmentGenericBegin* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_SegmentDatastoreBegin : public ::google::protobuf::Message {
+ public:
+  Operation_SegmentDatastoreBegin();
+  virtual ~Operation_SegmentDatastoreBegin();
+
+  Operation_SegmentDatastoreBegin(const Operation_SegmentDatastoreBegin& from);
+
+  inline Operation_SegmentDatastoreBegin& operator=(const Operation_SegmentDatastoreBegin& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_SegmentDatastoreBegin& default_instance();
+
+  void Swap(Operation_SegmentDatastoreBegin* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_SegmentDatastoreBegin* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_SegmentDatastoreBegin& from);
+  void MergeFrom(const Operation_SegmentDatastoreBegin& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 transaction_id = 1;
+  inline bool has_transaction_id() const;
+  inline void clear_transaction_id();
+  static const int kTransactionIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 transaction_id() const;
+  inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // optional uint64 parent_segment_id = 2;
+  inline bool has_parent_segment_id() const;
+  inline void clear_parent_segment_id();
+  static const int kParentSegmentIdFieldNumber = 2;
+  inline ::google::protobuf::uint64 parent_segment_id() const;
+  inline void set_parent_segment_id(::google::protobuf::uint64 value);
+
+  // required string table = 3;
+  inline bool has_table() const;
+  inline void clear_table();
+  static const int kTableFieldNumber = 3;
+  inline const ::std::string& table() const;
+  inline void set_table(const ::std::string& value);
+  inline void set_table(const char* value);
+  inline void set_table(const char* value, size_t size);
+  inline ::std::string* mutable_table();
+  inline ::std::string* release_table();
+  inline void set_allocated_table(::std::string* table);
+
+  // required .operation_msg.Operation.SegmentDatastoreOperation operation = 4;
+  inline bool has_operation() const;
+  inline void clear_operation();
+  static const int kOperationFieldNumber = 4;
+  inline ::operation_msg::Operation_SegmentDatastoreOperation operation() const;
+  inline void set_operation(::operation_msg::Operation_SegmentDatastoreOperation value);
+
+  // required string sql = 5;
+  inline bool has_sql() const;
+  inline void clear_sql();
+  static const int kSqlFieldNumber = 5;
+  inline const ::std::string& sql() const;
+  inline void set_sql(const ::std::string& value);
+  inline void set_sql(const char* value);
+  inline void set_sql(const char* value, size_t size);
+  inline ::std::string* mutable_sql();
+  inline ::std::string* release_sql();
+  inline void set_allocated_sql(::std::string* sql);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.SegmentDatastoreBegin)
+ private:
+  inline void set_has_transaction_id();
+  inline void clear_has_transaction_id();
+  inline void set_has_parent_segment_id();
+  inline void clear_has_parent_segment_id();
+  inline void set_has_table();
+  inline void clear_has_table();
+  inline void set_has_operation();
+  inline void clear_has_operation();
+  inline void set_has_sql();
+  inline void clear_has_sql();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 transaction_id_;
+  ::google::protobuf::uint64 parent_segment_id_;
+  ::std::string* table_;
+  ::std::string* sql_;
+  int operation_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_SegmentDatastoreBegin* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_SegmentExternalBegin : public ::google::protobuf::Message {
+ public:
+  Operation_SegmentExternalBegin();
+  virtual ~Operation_SegmentExternalBegin();
+
+  Operation_SegmentExternalBegin(const Operation_SegmentExternalBegin& from);
+
+  inline Operation_SegmentExternalBegin& operator=(const Operation_SegmentExternalBegin& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_SegmentExternalBegin& default_instance();
+
+  void Swap(Operation_SegmentExternalBegin* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_SegmentExternalBegin* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_SegmentExternalBegin& from);
+  void MergeFrom(const Operation_SegmentExternalBegin& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 transaction_id = 1;
+  inline bool has_transaction_id() const;
+  inline void clear_transaction_id();
+  static const int kTransactionIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 transaction_id() const;
+  inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // optional uint64 parent_segment_id = 2;
+  inline bool has_parent_segment_id() const;
+  inline void clear_parent_segment_id();
+  static const int kParentSegmentIdFieldNumber = 2;
+  inline ::google::protobuf::uint64 parent_segment_id() const;
+  inline void set_parent_segment_id(::google::protobuf::uint64 value);
+
+  // required string host = 3;
+  inline bool has_host() const;
+  inline void clear_host();
+  static const int kHostFieldNumber = 3;
+  inline const ::std::string& host() const;
+  inline void set_host(const ::std::string& value);
+  inline void set_host(const char* value);
+  inline void set_host(const char* value, size_t size);
+  inline ::std::string* mutable_host();
+  inline ::std::string* release_host();
+  inline void set_allocated_host(::std::string* host);
+
+  // required string name = 4;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 4;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.SegmentExternalBegin)
+ private:
+  inline void set_has_transaction_id();
+  inline void clear_has_transaction_id();
+  inline void set_has_parent_segment_id();
+  inline void clear_has_parent_segment_id();
+  inline void set_has_host();
+  inline void clear_has_host();
+  inline void set_has_name();
+  inline void clear_has_name();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 transaction_id_;
+  ::google::protobuf::uint64 parent_segment_id_;
+  ::std::string* host_;
+  ::std::string* name_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_SegmentExternalBegin* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_SegmentEnd : public ::google::protobuf::Message {
+ public:
+  Operation_SegmentEnd();
+  virtual ~Operation_SegmentEnd();
+
+  Operation_SegmentEnd(const Operation_SegmentEnd& from);
+
+  inline Operation_SegmentEnd& operator=(const Operation_SegmentEnd& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_SegmentEnd& default_instance();
+
+  void Swap(Operation_SegmentEnd* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_SegmentEnd* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_SegmentEnd& from);
+  void MergeFrom(const Operation_SegmentEnd& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint64 transaction_id = 1;
+  inline bool has_transaction_id() const;
+  inline void clear_transaction_id();
+  static const int kTransactionIdFieldNumber = 1;
+  inline ::google::protobuf::uint64 transaction_id() const;
+  inline void set_transaction_id(::google::protobuf::uint64 value);
+
+  // required uint64 segment_id = 2;
+  inline bool has_segment_id() const;
+  inline void clear_segment_id();
+  static const int kSegmentIdFieldNumber = 2;
+  inline ::google::protobuf::uint64 segment_id() const;
+  inline void set_segment_id(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:operation_msg.Operation.SegmentEnd)
+ private:
+  inline void set_has_transaction_id();
+  inline void clear_has_transaction_id();
+  inline void set_has_segment_id();
+  inline void clear_has_segment_id();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint64 transaction_id_;
+  ::google::protobuf::uint64 segment_id_;
+  friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
+  friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
+  friend void protobuf_ShutdownFile_operation_5fmsg_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_SegmentEnd* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -646,15 +1651,33 @@ class Operation : public ::google::protobuf::Message {
   // nested types ----------------------------------------------------
 
   typedef Operation_Init Init;
+  typedef Operation_EnableInstrumentation EnableInstrumentation;
+  typedef Operation_RecordMetric RecordMetric;
+  typedef Operation_RecondCPUUsage RecondCPUUsage;
+  typedef Operation_RecondMemoryUsage RecondMemoryUsage;
   typedef Operation_TransactionBegin TransactionBegin;
   typedef Operation_TransactionEnd TransactionEnd;
-  typedef Operation_NoticeError NoticeError;
+  typedef Operation_TransactionNoticeError TransactionNoticeError;
+  typedef Operation_TransactionAddAttribute TransactionAddAttribute;
+  typedef Operation_SegmentGenericBegin SegmentGenericBegin;
+  typedef Operation_SegmentDatastoreBegin SegmentDatastoreBegin;
+  typedef Operation_SegmentExternalBegin SegmentExternalBegin;
+  typedef Operation_SegmentEnd SegmentEnd;
 
   typedef Operation_OperationType OperationType;
   static const OperationType INIT = Operation_OperationType_INIT;
+  static const OperationType ENABLE_INSTRUMENTATION = Operation_OperationType_ENABLE_INSTRUMENTATION;
+  static const OperationType RECORD_METRIC = Operation_OperationType_RECORD_METRIC;
+  static const OperationType RECORD_CPU_USAGE = Operation_OperationType_RECORD_CPU_USAGE;
+  static const OperationType RECORD_MEMORY_USAGE = Operation_OperationType_RECORD_MEMORY_USAGE;
   static const OperationType TRANSACTION_BEGIN = Operation_OperationType_TRANSACTION_BEGIN;
   static const OperationType TRANSACTION_END = Operation_OperationType_TRANSACTION_END;
   static const OperationType TRANSACTION_NOTICE_ERROR = Operation_OperationType_TRANSACTION_NOTICE_ERROR;
+  static const OperationType TRANSACTION_ADD_ATTRIBUTE = Operation_OperationType_TRANSACTION_ADD_ATTRIBUTE;
+  static const OperationType SEGMENT_GENERIC_BEGIN = Operation_OperationType_SEGMENT_GENERIC_BEGIN;
+  static const OperationType SEGMENT_DATASTORE_BEGIN = Operation_OperationType_SEGMENT_DATASTORE_BEGIN;
+  static const OperationType SEGMENT_EXTERNAL_BEGIN = Operation_OperationType_SEGMENT_EXTERNAL_BEGIN;
+  static const OperationType SEGMENT_END = Operation_OperationType_SEGMENT_END;
   static inline bool OperationType_IsValid(int value) {
     return Operation_OperationType_IsValid(value);
   }
@@ -676,6 +1699,32 @@ class Operation : public ::google::protobuf::Message {
     return Operation_OperationType_Parse(name, value);
   }
 
+  typedef Operation_SegmentDatastoreOperation SegmentDatastoreOperation;
+  static const SegmentDatastoreOperation SELECT = Operation_SegmentDatastoreOperation_SELECT;
+  static const SegmentDatastoreOperation INSERT = Operation_SegmentDatastoreOperation_INSERT;
+  static const SegmentDatastoreOperation UPDATE = Operation_SegmentDatastoreOperation_UPDATE;
+  static const SegmentDatastoreOperation DELETE = Operation_SegmentDatastoreOperation_DELETE;
+  static inline bool SegmentDatastoreOperation_IsValid(int value) {
+    return Operation_SegmentDatastoreOperation_IsValid(value);
+  }
+  static const SegmentDatastoreOperation SegmentDatastoreOperation_MIN =
+    Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_MIN;
+  static const SegmentDatastoreOperation SegmentDatastoreOperation_MAX =
+    Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_MAX;
+  static const int SegmentDatastoreOperation_ARRAYSIZE =
+    Operation_SegmentDatastoreOperation_SegmentDatastoreOperation_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  SegmentDatastoreOperation_descriptor() {
+    return Operation_SegmentDatastoreOperation_descriptor();
+  }
+  static inline const ::std::string& SegmentDatastoreOperation_Name(SegmentDatastoreOperation value) {
+    return Operation_SegmentDatastoreOperation_Name(value);
+  }
+  static inline bool SegmentDatastoreOperation_Parse(const ::std::string& name,
+      SegmentDatastoreOperation* value) {
+    return Operation_SegmentDatastoreOperation_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // required .operation_msg.Operation.OperationType type = 1;
@@ -694,32 +1743,113 @@ class Operation : public ::google::protobuf::Message {
   inline ::operation_msg::Operation_Init* release_init();
   inline void set_allocated_init(::operation_msg::Operation_Init* init);
 
-  // optional .operation_msg.Operation.TransactionBegin transaction_begin = 3;
+  // optional .operation_msg.Operation.EnableInstrumentation enable_instrumentation = 3;
+  inline bool has_enable_instrumentation() const;
+  inline void clear_enable_instrumentation();
+  static const int kEnableInstrumentationFieldNumber = 3;
+  inline const ::operation_msg::Operation_EnableInstrumentation& enable_instrumentation() const;
+  inline ::operation_msg::Operation_EnableInstrumentation* mutable_enable_instrumentation();
+  inline ::operation_msg::Operation_EnableInstrumentation* release_enable_instrumentation();
+  inline void set_allocated_enable_instrumentation(::operation_msg::Operation_EnableInstrumentation* enable_instrumentation);
+
+  // optional .operation_msg.Operation.RecordMetric record_metric = 4;
+  inline bool has_record_metric() const;
+  inline void clear_record_metric();
+  static const int kRecordMetricFieldNumber = 4;
+  inline const ::operation_msg::Operation_RecordMetric& record_metric() const;
+  inline ::operation_msg::Operation_RecordMetric* mutable_record_metric();
+  inline ::operation_msg::Operation_RecordMetric* release_record_metric();
+  inline void set_allocated_record_metric(::operation_msg::Operation_RecordMetric* record_metric);
+
+  // optional .operation_msg.Operation.RecondCPUUsage record_cpu_usage = 5;
+  inline bool has_record_cpu_usage() const;
+  inline void clear_record_cpu_usage();
+  static const int kRecordCpuUsageFieldNumber = 5;
+  inline const ::operation_msg::Operation_RecondCPUUsage& record_cpu_usage() const;
+  inline ::operation_msg::Operation_RecondCPUUsage* mutable_record_cpu_usage();
+  inline ::operation_msg::Operation_RecondCPUUsage* release_record_cpu_usage();
+  inline void set_allocated_record_cpu_usage(::operation_msg::Operation_RecondCPUUsage* record_cpu_usage);
+
+  // optional .operation_msg.Operation.RecondMemoryUsage record_memory_usage = 6;
+  inline bool has_record_memory_usage() const;
+  inline void clear_record_memory_usage();
+  static const int kRecordMemoryUsageFieldNumber = 6;
+  inline const ::operation_msg::Operation_RecondMemoryUsage& record_memory_usage() const;
+  inline ::operation_msg::Operation_RecondMemoryUsage* mutable_record_memory_usage();
+  inline ::operation_msg::Operation_RecondMemoryUsage* release_record_memory_usage();
+  inline void set_allocated_record_memory_usage(::operation_msg::Operation_RecondMemoryUsage* record_memory_usage);
+
+  // optional .operation_msg.Operation.TransactionBegin transaction_begin = 7;
   inline bool has_transaction_begin() const;
   inline void clear_transaction_begin();
-  static const int kTransactionBeginFieldNumber = 3;
+  static const int kTransactionBeginFieldNumber = 7;
   inline const ::operation_msg::Operation_TransactionBegin& transaction_begin() const;
   inline ::operation_msg::Operation_TransactionBegin* mutable_transaction_begin();
   inline ::operation_msg::Operation_TransactionBegin* release_transaction_begin();
   inline void set_allocated_transaction_begin(::operation_msg::Operation_TransactionBegin* transaction_begin);
 
-  // optional .operation_msg.Operation.TransactionEnd transaction_end = 4;
+  // optional .operation_msg.Operation.TransactionEnd transaction_end = 8;
   inline bool has_transaction_end() const;
   inline void clear_transaction_end();
-  static const int kTransactionEndFieldNumber = 4;
+  static const int kTransactionEndFieldNumber = 8;
   inline const ::operation_msg::Operation_TransactionEnd& transaction_end() const;
   inline ::operation_msg::Operation_TransactionEnd* mutable_transaction_end();
   inline ::operation_msg::Operation_TransactionEnd* release_transaction_end();
   inline void set_allocated_transaction_end(::operation_msg::Operation_TransactionEnd* transaction_end);
 
-  // optional .operation_msg.Operation.NoticeError notice_error = 5;
-  inline bool has_notice_error() const;
-  inline void clear_notice_error();
-  static const int kNoticeErrorFieldNumber = 5;
-  inline const ::operation_msg::Operation_NoticeError& notice_error() const;
-  inline ::operation_msg::Operation_NoticeError* mutable_notice_error();
-  inline ::operation_msg::Operation_NoticeError* release_notice_error();
-  inline void set_allocated_notice_error(::operation_msg::Operation_NoticeError* notice_error);
+  // optional .operation_msg.Operation.TransactionNoticeError transaction_notice_error = 9;
+  inline bool has_transaction_notice_error() const;
+  inline void clear_transaction_notice_error();
+  static const int kTransactionNoticeErrorFieldNumber = 9;
+  inline const ::operation_msg::Operation_TransactionNoticeError& transaction_notice_error() const;
+  inline ::operation_msg::Operation_TransactionNoticeError* mutable_transaction_notice_error();
+  inline ::operation_msg::Operation_TransactionNoticeError* release_transaction_notice_error();
+  inline void set_allocated_transaction_notice_error(::operation_msg::Operation_TransactionNoticeError* transaction_notice_error);
+
+  // optional .operation_msg.Operation.TransactionAddAttribute transaction_add_attribute = 10;
+  inline bool has_transaction_add_attribute() const;
+  inline void clear_transaction_add_attribute();
+  static const int kTransactionAddAttributeFieldNumber = 10;
+  inline const ::operation_msg::Operation_TransactionAddAttribute& transaction_add_attribute() const;
+  inline ::operation_msg::Operation_TransactionAddAttribute* mutable_transaction_add_attribute();
+  inline ::operation_msg::Operation_TransactionAddAttribute* release_transaction_add_attribute();
+  inline void set_allocated_transaction_add_attribute(::operation_msg::Operation_TransactionAddAttribute* transaction_add_attribute);
+
+  // optional .operation_msg.Operation.SegmentGenericBegin segment_generic_begin = 11;
+  inline bool has_segment_generic_begin() const;
+  inline void clear_segment_generic_begin();
+  static const int kSegmentGenericBeginFieldNumber = 11;
+  inline const ::operation_msg::Operation_SegmentGenericBegin& segment_generic_begin() const;
+  inline ::operation_msg::Operation_SegmentGenericBegin* mutable_segment_generic_begin();
+  inline ::operation_msg::Operation_SegmentGenericBegin* release_segment_generic_begin();
+  inline void set_allocated_segment_generic_begin(::operation_msg::Operation_SegmentGenericBegin* segment_generic_begin);
+
+  // optional .operation_msg.Operation.SegmentDatastoreBegin segment_datastore_begin = 12;
+  inline bool has_segment_datastore_begin() const;
+  inline void clear_segment_datastore_begin();
+  static const int kSegmentDatastoreBeginFieldNumber = 12;
+  inline const ::operation_msg::Operation_SegmentDatastoreBegin& segment_datastore_begin() const;
+  inline ::operation_msg::Operation_SegmentDatastoreBegin* mutable_segment_datastore_begin();
+  inline ::operation_msg::Operation_SegmentDatastoreBegin* release_segment_datastore_begin();
+  inline void set_allocated_segment_datastore_begin(::operation_msg::Operation_SegmentDatastoreBegin* segment_datastore_begin);
+
+  // optional .operation_msg.Operation.SegmentExternalBegin segment_external_begin = 13;
+  inline bool has_segment_external_begin() const;
+  inline void clear_segment_external_begin();
+  static const int kSegmentExternalBeginFieldNumber = 13;
+  inline const ::operation_msg::Operation_SegmentExternalBegin& segment_external_begin() const;
+  inline ::operation_msg::Operation_SegmentExternalBegin* mutable_segment_external_begin();
+  inline ::operation_msg::Operation_SegmentExternalBegin* release_segment_external_begin();
+  inline void set_allocated_segment_external_begin(::operation_msg::Operation_SegmentExternalBegin* segment_external_begin);
+
+  // optional .operation_msg.Operation.SegmentEnd segment_end = 14;
+  inline bool has_segment_end() const;
+  inline void clear_segment_end();
+  static const int kSegmentEndFieldNumber = 14;
+  inline const ::operation_msg::Operation_SegmentEnd& segment_end() const;
+  inline ::operation_msg::Operation_SegmentEnd* mutable_segment_end();
+  inline ::operation_msg::Operation_SegmentEnd* release_segment_end();
+  inline void set_allocated_segment_end(::operation_msg::Operation_SegmentEnd* segment_end);
 
   // @@protoc_insertion_point(class_scope:operation_msg.Operation)
  private:
@@ -727,21 +1857,48 @@ class Operation : public ::google::protobuf::Message {
   inline void clear_has_type();
   inline void set_has_init();
   inline void clear_has_init();
+  inline void set_has_enable_instrumentation();
+  inline void clear_has_enable_instrumentation();
+  inline void set_has_record_metric();
+  inline void clear_has_record_metric();
+  inline void set_has_record_cpu_usage();
+  inline void clear_has_record_cpu_usage();
+  inline void set_has_record_memory_usage();
+  inline void clear_has_record_memory_usage();
   inline void set_has_transaction_begin();
   inline void clear_has_transaction_begin();
   inline void set_has_transaction_end();
   inline void clear_has_transaction_end();
-  inline void set_has_notice_error();
-  inline void clear_has_notice_error();
+  inline void set_has_transaction_notice_error();
+  inline void clear_has_transaction_notice_error();
+  inline void set_has_transaction_add_attribute();
+  inline void clear_has_transaction_add_attribute();
+  inline void set_has_segment_generic_begin();
+  inline void clear_has_segment_generic_begin();
+  inline void set_has_segment_datastore_begin();
+  inline void clear_has_segment_datastore_begin();
+  inline void set_has_segment_external_begin();
+  inline void clear_has_segment_external_begin();
+  inline void set_has_segment_end();
+  inline void clear_has_segment_end();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::operation_msg::Operation_Init* init_;
+  ::operation_msg::Operation_EnableInstrumentation* enable_instrumentation_;
+  ::operation_msg::Operation_RecordMetric* record_metric_;
+  ::operation_msg::Operation_RecondCPUUsage* record_cpu_usage_;
+  ::operation_msg::Operation_RecondMemoryUsage* record_memory_usage_;
   ::operation_msg::Operation_TransactionBegin* transaction_begin_;
   ::operation_msg::Operation_TransactionEnd* transaction_end_;
-  ::operation_msg::Operation_NoticeError* notice_error_;
+  ::operation_msg::Operation_TransactionNoticeError* transaction_notice_error_;
+  ::operation_msg::Operation_TransactionAddAttribute* transaction_add_attribute_;
+  ::operation_msg::Operation_SegmentGenericBegin* segment_generic_begin_;
+  ::operation_msg::Operation_SegmentDatastoreBegin* segment_datastore_begin_;
+  ::operation_msg::Operation_SegmentExternalBegin* segment_external_begin_;
+  ::operation_msg::Operation_SegmentEnd* segment_end_;
   int type_;
   friend void  protobuf_AddDesc_operation_5fmsg_2eproto();
   friend void protobuf_AssignDesc_operation_5fmsg_2eproto();
@@ -805,15 +1962,91 @@ inline void Response::set_code(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:operation_msg.Response.code)
 }
 
-// optional uint64 transaction_id = 3;
-inline bool Response::has_transaction_id() const {
+// optional string error_msg = 3;
+inline bool Response::has_error_msg() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void Response::set_has_transaction_id() {
+inline void Response::set_has_error_msg() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void Response::clear_has_transaction_id() {
+inline void Response::clear_has_error_msg() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void Response::clear_error_msg() {
+  if (error_msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    error_msg_->clear();
+  }
+  clear_has_error_msg();
+}
+inline const ::std::string& Response::error_msg() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Response.error_msg)
+  return *error_msg_;
+}
+inline void Response::set_error_msg(const ::std::string& value) {
+  set_has_error_msg();
+  if (error_msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    error_msg_ = new ::std::string;
+  }
+  error_msg_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Response.error_msg)
+}
+inline void Response::set_error_msg(const char* value) {
+  set_has_error_msg();
+  if (error_msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    error_msg_ = new ::std::string;
+  }
+  error_msg_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Response.error_msg)
+}
+inline void Response::set_error_msg(const char* value, size_t size) {
+  set_has_error_msg();
+  if (error_msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    error_msg_ = new ::std::string;
+  }
+  error_msg_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Response.error_msg)
+}
+inline ::std::string* Response::mutable_error_msg() {
+  set_has_error_msg();
+  if (error_msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    error_msg_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Response.error_msg)
+  return error_msg_;
+}
+inline ::std::string* Response::release_error_msg() {
+  clear_has_error_msg();
+  if (error_msg_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = error_msg_;
+    error_msg_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Response::set_allocated_error_msg(::std::string* error_msg) {
+  if (error_msg_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete error_msg_;
+  }
+  if (error_msg) {
+    set_has_error_msg();
+    error_msg_ = error_msg;
+  } else {
+    clear_has_error_msg();
+    error_msg_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Response.error_msg)
+}
+
+// optional uint64 transaction_id = 4;
+inline bool Response::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Response::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Response::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void Response::clear_transaction_id() {
   transaction_id_ = GOOGLE_ULONGLONG(0);
@@ -827,6 +2060,30 @@ inline void Response::set_transaction_id(::google::protobuf::uint64 value) {
   set_has_transaction_id();
   transaction_id_ = value;
   // @@protoc_insertion_point(field_set:operation_msg.Response.transaction_id)
+}
+
+// optional uint64 segment_id = 5;
+inline bool Response::has_segment_id() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Response::set_has_segment_id() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Response::clear_has_segment_id() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Response::clear_segment_id() {
+  segment_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_segment_id();
+}
+inline ::google::protobuf::uint64 Response::segment_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Response.segment_id)
+  return segment_id_;
+}
+inline void Response::set_segment_id(::google::protobuf::uint64 value) {
+  set_has_segment_id();
+  segment_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Response.segment_id)
 }
 
 // -------------------------------------------------------------------
@@ -1139,6 +2396,218 @@ inline void Operation_Init::set_allocated_language_version(::std::string* langua
 
 // -------------------------------------------------------------------
 
+// Operation_EnableInstrumentation
+
+// required bool set_enabled = 1;
+inline bool Operation_EnableInstrumentation::has_set_enabled() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_EnableInstrumentation::set_has_set_enabled() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_EnableInstrumentation::clear_has_set_enabled() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_EnableInstrumentation::clear_set_enabled() {
+  set_enabled_ = false;
+  clear_has_set_enabled();
+}
+inline bool Operation_EnableInstrumentation::set_enabled() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.EnableInstrumentation.set_enabled)
+  return set_enabled_;
+}
+inline void Operation_EnableInstrumentation::set_set_enabled(bool value) {
+  set_has_set_enabled();
+  set_enabled_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.EnableInstrumentation.set_enabled)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_RecordMetric
+
+// required string name = 1;
+inline bool Operation_RecordMetric::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_RecordMetric::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_RecordMetric::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_RecordMetric::clear_name() {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& Operation_RecordMetric::name() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.RecordMetric.name)
+  return *name_;
+}
+inline void Operation_RecordMetric::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.RecordMetric.name)
+}
+inline void Operation_RecordMetric::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.RecordMetric.name)
+}
+inline void Operation_RecordMetric::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.RecordMetric.name)
+}
+inline ::std::string* Operation_RecordMetric::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.RecordMetric.name)
+  return name_;
+}
+inline ::std::string* Operation_RecordMetric::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_RecordMetric::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.RecordMetric.name)
+}
+
+// required double value = 2;
+inline bool Operation_RecordMetric::has_value() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_RecordMetric::set_has_value() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_RecordMetric::clear_has_value() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_RecordMetric::clear_value() {
+  value_ = 0;
+  clear_has_value();
+}
+inline double Operation_RecordMetric::value() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.RecordMetric.value)
+  return value_;
+}
+inline void Operation_RecordMetric::set_value(double value) {
+  set_has_value();
+  value_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.RecordMetric.value)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_RecondCPUUsage
+
+// required double cpu_user_time_seconds = 1;
+inline bool Operation_RecondCPUUsage::has_cpu_user_time_seconds() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_RecondCPUUsage::set_has_cpu_user_time_seconds() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_RecondCPUUsage::clear_has_cpu_user_time_seconds() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_RecondCPUUsage::clear_cpu_user_time_seconds() {
+  cpu_user_time_seconds_ = 0;
+  clear_has_cpu_user_time_seconds();
+}
+inline double Operation_RecondCPUUsage::cpu_user_time_seconds() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.RecondCPUUsage.cpu_user_time_seconds)
+  return cpu_user_time_seconds_;
+}
+inline void Operation_RecondCPUUsage::set_cpu_user_time_seconds(double value) {
+  set_has_cpu_user_time_seconds();
+  cpu_user_time_seconds_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.RecondCPUUsage.cpu_user_time_seconds)
+}
+
+// required double cpu_usage_percent = 2;
+inline bool Operation_RecondCPUUsage::has_cpu_usage_percent() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_RecondCPUUsage::set_has_cpu_usage_percent() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_RecondCPUUsage::clear_has_cpu_usage_percent() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_RecondCPUUsage::clear_cpu_usage_percent() {
+  cpu_usage_percent_ = 0;
+  clear_has_cpu_usage_percent();
+}
+inline double Operation_RecondCPUUsage::cpu_usage_percent() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.RecondCPUUsage.cpu_usage_percent)
+  return cpu_usage_percent_;
+}
+inline void Operation_RecondCPUUsage::set_cpu_usage_percent(double value) {
+  set_has_cpu_usage_percent();
+  cpu_usage_percent_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.RecondCPUUsage.cpu_usage_percent)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_RecondMemoryUsage
+
+// required double memory_megabytes = 1;
+inline bool Operation_RecondMemoryUsage::has_memory_megabytes() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_RecondMemoryUsage::set_has_memory_megabytes() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_RecondMemoryUsage::clear_has_memory_megabytes() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_RecondMemoryUsage::clear_memory_megabytes() {
+  memory_megabytes_ = 0;
+  clear_has_memory_megabytes();
+}
+inline double Operation_RecondMemoryUsage::memory_megabytes() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.RecondMemoryUsage.memory_megabytes)
+  return memory_megabytes_;
+}
+inline void Operation_RecondMemoryUsage::set_memory_megabytes(double value) {
+  set_has_memory_megabytes();
+  memory_megabytes_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.RecondMemoryUsage.memory_megabytes)
+}
+
+// -------------------------------------------------------------------
+
 // Operation_TransactionBegin
 
 // required string name = 1;
@@ -1217,6 +2686,206 @@ inline void Operation_TransactionBegin::set_allocated_name(::std::string* name) 
   // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionBegin.name)
 }
 
+// optional bool set_type_web = 2;
+inline bool Operation_TransactionBegin::has_set_type_web() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_TransactionBegin::set_has_set_type_web() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_TransactionBegin::clear_has_set_type_web() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_TransactionBegin::clear_set_type_web() {
+  set_type_web_ = false;
+  clear_has_set_type_web();
+}
+inline bool Operation_TransactionBegin::set_type_web() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionBegin.set_type_web)
+  return set_type_web_;
+}
+inline void Operation_TransactionBegin::set_set_type_web(bool value) {
+  set_has_set_type_web();
+  set_type_web_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionBegin.set_type_web)
+}
+
+// optional string category = 3;
+inline bool Operation_TransactionBegin::has_category() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation_TransactionBegin::set_has_category() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation_TransactionBegin::clear_has_category() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation_TransactionBegin::clear_category() {
+  if (category_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    category_->clear();
+  }
+  clear_has_category();
+}
+inline const ::std::string& Operation_TransactionBegin::category() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionBegin.category)
+  return *category_;
+}
+inline void Operation_TransactionBegin::set_category(const ::std::string& value) {
+  set_has_category();
+  if (category_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    category_ = new ::std::string;
+  }
+  category_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionBegin.category)
+}
+inline void Operation_TransactionBegin::set_category(const char* value) {
+  set_has_category();
+  if (category_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    category_ = new ::std::string;
+  }
+  category_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionBegin.category)
+}
+inline void Operation_TransactionBegin::set_category(const char* value, size_t size) {
+  set_has_category();
+  if (category_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    category_ = new ::std::string;
+  }
+  category_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionBegin.category)
+}
+inline ::std::string* Operation_TransactionBegin::mutable_category() {
+  set_has_category();
+  if (category_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    category_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionBegin.category)
+  return category_;
+}
+inline ::std::string* Operation_TransactionBegin::release_category() {
+  clear_has_category();
+  if (category_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = category_;
+    category_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_TransactionBegin::set_allocated_category(::std::string* category) {
+  if (category_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete category_;
+  }
+  if (category) {
+    set_has_category();
+    category_ = category;
+  } else {
+    clear_has_category();
+    category_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionBegin.category)
+}
+
+// optional string request_url = 4;
+inline bool Operation_TransactionBegin::has_request_url() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Operation_TransactionBegin::set_has_request_url() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Operation_TransactionBegin::clear_has_request_url() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Operation_TransactionBegin::clear_request_url() {
+  if (request_url_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    request_url_->clear();
+  }
+  clear_has_request_url();
+}
+inline const ::std::string& Operation_TransactionBegin::request_url() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionBegin.request_url)
+  return *request_url_;
+}
+inline void Operation_TransactionBegin::set_request_url(const ::std::string& value) {
+  set_has_request_url();
+  if (request_url_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    request_url_ = new ::std::string;
+  }
+  request_url_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionBegin.request_url)
+}
+inline void Operation_TransactionBegin::set_request_url(const char* value) {
+  set_has_request_url();
+  if (request_url_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    request_url_ = new ::std::string;
+  }
+  request_url_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionBegin.request_url)
+}
+inline void Operation_TransactionBegin::set_request_url(const char* value, size_t size) {
+  set_has_request_url();
+  if (request_url_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    request_url_ = new ::std::string;
+  }
+  request_url_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionBegin.request_url)
+}
+inline ::std::string* Operation_TransactionBegin::mutable_request_url() {
+  set_has_request_url();
+  if (request_url_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    request_url_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionBegin.request_url)
+  return request_url_;
+}
+inline ::std::string* Operation_TransactionBegin::release_request_url() {
+  clear_has_request_url();
+  if (request_url_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = request_url_;
+    request_url_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_TransactionBegin::set_allocated_request_url(::std::string* request_url) {
+  if (request_url_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete request_url_;
+  }
+  if (request_url) {
+    set_has_request_url();
+    request_url_ = request_url;
+  } else {
+    clear_has_request_url();
+    request_url_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionBegin.request_url)
+}
+
+// optional int32 max_trace_segments = 5;
+inline bool Operation_TransactionBegin::has_max_trace_segments() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Operation_TransactionBegin::set_has_max_trace_segments() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Operation_TransactionBegin::clear_has_max_trace_segments() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Operation_TransactionBegin::clear_max_trace_segments() {
+  max_trace_segments_ = 0;
+  clear_has_max_trace_segments();
+}
+inline ::google::protobuf::int32 Operation_TransactionBegin::max_trace_segments() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionBegin.max_trace_segments)
+  return max_trace_segments_;
+}
+inline void Operation_TransactionBegin::set_max_trace_segments(::google::protobuf::int32 value) {
+  set_has_max_trace_segments();
+  max_trace_segments_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionBegin.max_trace_segments)
+}
+
 // -------------------------------------------------------------------
 
 // Operation_TransactionEnd
@@ -1247,85 +2916,85 @@ inline void Operation_TransactionEnd::set_transaction_id(::google::protobuf::uin
 
 // -------------------------------------------------------------------
 
-// Operation_NoticeError
+// Operation_TransactionNoticeError
 
 // required uint64 transaction_id = 1;
-inline bool Operation_NoticeError::has_transaction_id() const {
+inline bool Operation_TransactionNoticeError::has_transaction_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void Operation_NoticeError::set_has_transaction_id() {
+inline void Operation_TransactionNoticeError::set_has_transaction_id() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void Operation_NoticeError::clear_has_transaction_id() {
+inline void Operation_TransactionNoticeError::clear_has_transaction_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void Operation_NoticeError::clear_transaction_id() {
+inline void Operation_TransactionNoticeError::clear_transaction_id() {
   transaction_id_ = GOOGLE_ULONGLONG(0);
   clear_has_transaction_id();
 }
-inline ::google::protobuf::uint64 Operation_NoticeError::transaction_id() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.NoticeError.transaction_id)
+inline ::google::protobuf::uint64 Operation_TransactionNoticeError::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionNoticeError.transaction_id)
   return transaction_id_;
 }
-inline void Operation_NoticeError::set_transaction_id(::google::protobuf::uint64 value) {
+inline void Operation_TransactionNoticeError::set_transaction_id(::google::protobuf::uint64 value) {
   set_has_transaction_id();
   transaction_id_ = value;
-  // @@protoc_insertion_point(field_set:operation_msg.Operation.NoticeError.transaction_id)
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionNoticeError.transaction_id)
 }
 
 // required string exception_type = 2;
-inline bool Operation_NoticeError::has_exception_type() const {
+inline bool Operation_TransactionNoticeError::has_exception_type() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void Operation_NoticeError::set_has_exception_type() {
+inline void Operation_TransactionNoticeError::set_has_exception_type() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void Operation_NoticeError::clear_has_exception_type() {
+inline void Operation_TransactionNoticeError::clear_has_exception_type() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void Operation_NoticeError::clear_exception_type() {
+inline void Operation_TransactionNoticeError::clear_exception_type() {
   if (exception_type_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     exception_type_->clear();
   }
   clear_has_exception_type();
 }
-inline const ::std::string& Operation_NoticeError::exception_type() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.NoticeError.exception_type)
+inline const ::std::string& Operation_TransactionNoticeError::exception_type() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionNoticeError.exception_type)
   return *exception_type_;
 }
-inline void Operation_NoticeError::set_exception_type(const ::std::string& value) {
+inline void Operation_TransactionNoticeError::set_exception_type(const ::std::string& value) {
   set_has_exception_type();
   if (exception_type_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     exception_type_ = new ::std::string;
   }
   exception_type_->assign(value);
-  // @@protoc_insertion_point(field_set:operation_msg.Operation.NoticeError.exception_type)
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionNoticeError.exception_type)
 }
-inline void Operation_NoticeError::set_exception_type(const char* value) {
+inline void Operation_TransactionNoticeError::set_exception_type(const char* value) {
   set_has_exception_type();
   if (exception_type_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     exception_type_ = new ::std::string;
   }
   exception_type_->assign(value);
-  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.NoticeError.exception_type)
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionNoticeError.exception_type)
 }
-inline void Operation_NoticeError::set_exception_type(const char* value, size_t size) {
+inline void Operation_TransactionNoticeError::set_exception_type(const char* value, size_t size) {
   set_has_exception_type();
   if (exception_type_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     exception_type_ = new ::std::string;
   }
   exception_type_->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.NoticeError.exception_type)
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionNoticeError.exception_type)
 }
-inline ::std::string* Operation_NoticeError::mutable_exception_type() {
+inline ::std::string* Operation_TransactionNoticeError::mutable_exception_type() {
   set_has_exception_type();
   if (exception_type_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     exception_type_ = new ::std::string;
   }
-  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.NoticeError.exception_type)
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionNoticeError.exception_type)
   return exception_type_;
 }
-inline ::std::string* Operation_NoticeError::release_exception_type() {
+inline ::std::string* Operation_TransactionNoticeError::release_exception_type() {
   clear_has_exception_type();
   if (exception_type_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     return NULL;
@@ -1335,7 +3004,7 @@ inline ::std::string* Operation_NoticeError::release_exception_type() {
     return temp;
   }
 }
-inline void Operation_NoticeError::set_allocated_exception_type(::std::string* exception_type) {
+inline void Operation_TransactionNoticeError::set_allocated_exception_type(::std::string* exception_type) {
   if (exception_type_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete exception_type_;
   }
@@ -1346,62 +3015,62 @@ inline void Operation_NoticeError::set_allocated_exception_type(::std::string* e
     clear_has_exception_type();
     exception_type_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.NoticeError.exception_type)
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionNoticeError.exception_type)
 }
 
 // required string error_message = 3;
-inline bool Operation_NoticeError::has_error_message() const {
+inline bool Operation_TransactionNoticeError::has_error_message() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void Operation_NoticeError::set_has_error_message() {
+inline void Operation_TransactionNoticeError::set_has_error_message() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void Operation_NoticeError::clear_has_error_message() {
+inline void Operation_TransactionNoticeError::clear_has_error_message() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void Operation_NoticeError::clear_error_message() {
+inline void Operation_TransactionNoticeError::clear_error_message() {
   if (error_message_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     error_message_->clear();
   }
   clear_has_error_message();
 }
-inline const ::std::string& Operation_NoticeError::error_message() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.NoticeError.error_message)
+inline const ::std::string& Operation_TransactionNoticeError::error_message() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionNoticeError.error_message)
   return *error_message_;
 }
-inline void Operation_NoticeError::set_error_message(const ::std::string& value) {
+inline void Operation_TransactionNoticeError::set_error_message(const ::std::string& value) {
   set_has_error_message();
   if (error_message_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     error_message_ = new ::std::string;
   }
   error_message_->assign(value);
-  // @@protoc_insertion_point(field_set:operation_msg.Operation.NoticeError.error_message)
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionNoticeError.error_message)
 }
-inline void Operation_NoticeError::set_error_message(const char* value) {
+inline void Operation_TransactionNoticeError::set_error_message(const char* value) {
   set_has_error_message();
   if (error_message_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     error_message_ = new ::std::string;
   }
   error_message_->assign(value);
-  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.NoticeError.error_message)
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionNoticeError.error_message)
 }
-inline void Operation_NoticeError::set_error_message(const char* value, size_t size) {
+inline void Operation_TransactionNoticeError::set_error_message(const char* value, size_t size) {
   set_has_error_message();
   if (error_message_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     error_message_ = new ::std::string;
   }
   error_message_->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.NoticeError.error_message)
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionNoticeError.error_message)
 }
-inline ::std::string* Operation_NoticeError::mutable_error_message() {
+inline ::std::string* Operation_TransactionNoticeError::mutable_error_message() {
   set_has_error_message();
   if (error_message_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     error_message_ = new ::std::string;
   }
-  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.NoticeError.error_message)
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionNoticeError.error_message)
   return error_message_;
 }
-inline ::std::string* Operation_NoticeError::release_error_message() {
+inline ::std::string* Operation_TransactionNoticeError::release_error_message() {
   clear_has_error_message();
   if (error_message_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     return NULL;
@@ -1411,7 +3080,7 @@ inline ::std::string* Operation_NoticeError::release_error_message() {
     return temp;
   }
 }
-inline void Operation_NoticeError::set_allocated_error_message(::std::string* error_message) {
+inline void Operation_TransactionNoticeError::set_allocated_error_message(::std::string* error_message) {
   if (error_message_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete error_message_;
   }
@@ -1422,62 +3091,62 @@ inline void Operation_NoticeError::set_allocated_error_message(::std::string* er
     clear_has_error_message();
     error_message_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.NoticeError.error_message)
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionNoticeError.error_message)
 }
 
 // required string stack_trace = 4;
-inline bool Operation_NoticeError::has_stack_trace() const {
+inline bool Operation_TransactionNoticeError::has_stack_trace() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void Operation_NoticeError::set_has_stack_trace() {
+inline void Operation_TransactionNoticeError::set_has_stack_trace() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void Operation_NoticeError::clear_has_stack_trace() {
+inline void Operation_TransactionNoticeError::clear_has_stack_trace() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void Operation_NoticeError::clear_stack_trace() {
+inline void Operation_TransactionNoticeError::clear_stack_trace() {
   if (stack_trace_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_trace_->clear();
   }
   clear_has_stack_trace();
 }
-inline const ::std::string& Operation_NoticeError::stack_trace() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.NoticeError.stack_trace)
+inline const ::std::string& Operation_TransactionNoticeError::stack_trace() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionNoticeError.stack_trace)
   return *stack_trace_;
 }
-inline void Operation_NoticeError::set_stack_trace(const ::std::string& value) {
+inline void Operation_TransactionNoticeError::set_stack_trace(const ::std::string& value) {
   set_has_stack_trace();
   if (stack_trace_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_trace_ = new ::std::string;
   }
   stack_trace_->assign(value);
-  // @@protoc_insertion_point(field_set:operation_msg.Operation.NoticeError.stack_trace)
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionNoticeError.stack_trace)
 }
-inline void Operation_NoticeError::set_stack_trace(const char* value) {
+inline void Operation_TransactionNoticeError::set_stack_trace(const char* value) {
   set_has_stack_trace();
   if (stack_trace_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_trace_ = new ::std::string;
   }
   stack_trace_->assign(value);
-  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.NoticeError.stack_trace)
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionNoticeError.stack_trace)
 }
-inline void Operation_NoticeError::set_stack_trace(const char* value, size_t size) {
+inline void Operation_TransactionNoticeError::set_stack_trace(const char* value, size_t size) {
   set_has_stack_trace();
   if (stack_trace_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_trace_ = new ::std::string;
   }
   stack_trace_->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.NoticeError.stack_trace)
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionNoticeError.stack_trace)
 }
-inline ::std::string* Operation_NoticeError::mutable_stack_trace() {
+inline ::std::string* Operation_TransactionNoticeError::mutable_stack_trace() {
   set_has_stack_trace();
   if (stack_trace_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_trace_ = new ::std::string;
   }
-  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.NoticeError.stack_trace)
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionNoticeError.stack_trace)
   return stack_trace_;
 }
-inline ::std::string* Operation_NoticeError::release_stack_trace() {
+inline ::std::string* Operation_TransactionNoticeError::release_stack_trace() {
   clear_has_stack_trace();
   if (stack_trace_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     return NULL;
@@ -1487,7 +3156,7 @@ inline ::std::string* Operation_NoticeError::release_stack_trace() {
     return temp;
   }
 }
-inline void Operation_NoticeError::set_allocated_stack_trace(::std::string* stack_trace) {
+inline void Operation_TransactionNoticeError::set_allocated_stack_trace(::std::string* stack_trace) {
   if (stack_trace_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete stack_trace_;
   }
@@ -1498,62 +3167,62 @@ inline void Operation_NoticeError::set_allocated_stack_trace(::std::string* stac
     clear_has_stack_trace();
     stack_trace_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.NoticeError.stack_trace)
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionNoticeError.stack_trace)
 }
 
 // required string stack_frame_delimiter = 5;
-inline bool Operation_NoticeError::has_stack_frame_delimiter() const {
+inline bool Operation_TransactionNoticeError::has_stack_frame_delimiter() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void Operation_NoticeError::set_has_stack_frame_delimiter() {
+inline void Operation_TransactionNoticeError::set_has_stack_frame_delimiter() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void Operation_NoticeError::clear_has_stack_frame_delimiter() {
+inline void Operation_TransactionNoticeError::clear_has_stack_frame_delimiter() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void Operation_NoticeError::clear_stack_frame_delimiter() {
+inline void Operation_TransactionNoticeError::clear_stack_frame_delimiter() {
   if (stack_frame_delimiter_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_frame_delimiter_->clear();
   }
   clear_has_stack_frame_delimiter();
 }
-inline const ::std::string& Operation_NoticeError::stack_frame_delimiter() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+inline const ::std::string& Operation_TransactionNoticeError::stack_frame_delimiter() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
   return *stack_frame_delimiter_;
 }
-inline void Operation_NoticeError::set_stack_frame_delimiter(const ::std::string& value) {
+inline void Operation_TransactionNoticeError::set_stack_frame_delimiter(const ::std::string& value) {
   set_has_stack_frame_delimiter();
   if (stack_frame_delimiter_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_frame_delimiter_ = new ::std::string;
   }
   stack_frame_delimiter_->assign(value);
-  // @@protoc_insertion_point(field_set:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
 }
-inline void Operation_NoticeError::set_stack_frame_delimiter(const char* value) {
+inline void Operation_TransactionNoticeError::set_stack_frame_delimiter(const char* value) {
   set_has_stack_frame_delimiter();
   if (stack_frame_delimiter_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_frame_delimiter_ = new ::std::string;
   }
   stack_frame_delimiter_->assign(value);
-  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
 }
-inline void Operation_NoticeError::set_stack_frame_delimiter(const char* value, size_t size) {
+inline void Operation_TransactionNoticeError::set_stack_frame_delimiter(const char* value, size_t size) {
   set_has_stack_frame_delimiter();
   if (stack_frame_delimiter_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_frame_delimiter_ = new ::std::string;
   }
   stack_frame_delimiter_->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
 }
-inline ::std::string* Operation_NoticeError::mutable_stack_frame_delimiter() {
+inline ::std::string* Operation_TransactionNoticeError::mutable_stack_frame_delimiter() {
   set_has_stack_frame_delimiter();
   if (stack_frame_delimiter_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     stack_frame_delimiter_ = new ::std::string;
   }
-  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
   return stack_frame_delimiter_;
 }
-inline ::std::string* Operation_NoticeError::release_stack_frame_delimiter() {
+inline ::std::string* Operation_TransactionNoticeError::release_stack_frame_delimiter() {
   clear_has_stack_frame_delimiter();
   if (stack_frame_delimiter_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     return NULL;
@@ -1563,7 +3232,7 @@ inline ::std::string* Operation_NoticeError::release_stack_frame_delimiter() {
     return temp;
   }
 }
-inline void Operation_NoticeError::set_allocated_stack_frame_delimiter(::std::string* stack_frame_delimiter) {
+inline void Operation_TransactionNoticeError::set_allocated_stack_frame_delimiter(::std::string* stack_frame_delimiter) {
   if (stack_frame_delimiter_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete stack_frame_delimiter_;
   }
@@ -1574,7 +3243,800 @@ inline void Operation_NoticeError::set_allocated_stack_frame_delimiter(::std::st
     clear_has_stack_frame_delimiter();
     stack_frame_delimiter_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
-  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.NoticeError.stack_frame_delimiter)
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionNoticeError.stack_frame_delimiter)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_TransactionAddAttribute
+
+// required uint64 transaction_id = 1;
+inline bool Operation_TransactionAddAttribute::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_TransactionAddAttribute::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_TransactionAddAttribute::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_TransactionAddAttribute::clear_transaction_id() {
+  transaction_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_transaction_id();
+}
+inline ::google::protobuf::uint64 Operation_TransactionAddAttribute::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionAddAttribute.transaction_id)
+  return transaction_id_;
+}
+inline void Operation_TransactionAddAttribute::set_transaction_id(::google::protobuf::uint64 value) {
+  set_has_transaction_id();
+  transaction_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionAddAttribute.transaction_id)
+}
+
+// required string name = 2;
+inline bool Operation_TransactionAddAttribute::has_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_TransactionAddAttribute::set_has_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_TransactionAddAttribute::clear_has_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_TransactionAddAttribute::clear_name() {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& Operation_TransactionAddAttribute::name() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionAddAttribute.name)
+  return *name_;
+}
+inline void Operation_TransactionAddAttribute::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionAddAttribute.name)
+}
+inline void Operation_TransactionAddAttribute::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionAddAttribute.name)
+}
+inline void Operation_TransactionAddAttribute::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionAddAttribute.name)
+}
+inline ::std::string* Operation_TransactionAddAttribute::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionAddAttribute.name)
+  return name_;
+}
+inline ::std::string* Operation_TransactionAddAttribute::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_TransactionAddAttribute::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionAddAttribute.name)
+}
+
+// required string value = 3;
+inline bool Operation_TransactionAddAttribute::has_value() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation_TransactionAddAttribute::set_has_value() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation_TransactionAddAttribute::clear_has_value() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation_TransactionAddAttribute::clear_value() {
+  if (value_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    value_->clear();
+  }
+  clear_has_value();
+}
+inline const ::std::string& Operation_TransactionAddAttribute::value() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.TransactionAddAttribute.value)
+  return *value_;
+}
+inline void Operation_TransactionAddAttribute::set_value(const ::std::string& value) {
+  set_has_value();
+  if (value_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    value_ = new ::std::string;
+  }
+  value_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.TransactionAddAttribute.value)
+}
+inline void Operation_TransactionAddAttribute::set_value(const char* value) {
+  set_has_value();
+  if (value_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    value_ = new ::std::string;
+  }
+  value_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.TransactionAddAttribute.value)
+}
+inline void Operation_TransactionAddAttribute::set_value(const char* value, size_t size) {
+  set_has_value();
+  if (value_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    value_ = new ::std::string;
+  }
+  value_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.TransactionAddAttribute.value)
+}
+inline ::std::string* Operation_TransactionAddAttribute::mutable_value() {
+  set_has_value();
+  if (value_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    value_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.TransactionAddAttribute.value)
+  return value_;
+}
+inline ::std::string* Operation_TransactionAddAttribute::release_value() {
+  clear_has_value();
+  if (value_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = value_;
+    value_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_TransactionAddAttribute::set_allocated_value(::std::string* value) {
+  if (value_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete value_;
+  }
+  if (value) {
+    set_has_value();
+    value_ = value;
+  } else {
+    clear_has_value();
+    value_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.TransactionAddAttribute.value)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_SegmentGenericBegin
+
+// required uint64 transaction_id = 1;
+inline bool Operation_SegmentGenericBegin::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_SegmentGenericBegin::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_SegmentGenericBegin::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_SegmentGenericBegin::clear_transaction_id() {
+  transaction_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_transaction_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentGenericBegin::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentGenericBegin.transaction_id)
+  return transaction_id_;
+}
+inline void Operation_SegmentGenericBegin::set_transaction_id(::google::protobuf::uint64 value) {
+  set_has_transaction_id();
+  transaction_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentGenericBegin.transaction_id)
+}
+
+// optional uint64 parent_segment_id = 2;
+inline bool Operation_SegmentGenericBegin::has_parent_segment_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_SegmentGenericBegin::set_has_parent_segment_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_SegmentGenericBegin::clear_has_parent_segment_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_SegmentGenericBegin::clear_parent_segment_id() {
+  parent_segment_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_parent_segment_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentGenericBegin::parent_segment_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentGenericBegin.parent_segment_id)
+  return parent_segment_id_;
+}
+inline void Operation_SegmentGenericBegin::set_parent_segment_id(::google::protobuf::uint64 value) {
+  set_has_parent_segment_id();
+  parent_segment_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentGenericBegin.parent_segment_id)
+}
+
+// required string name = 3;
+inline bool Operation_SegmentGenericBegin::has_name() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation_SegmentGenericBegin::set_has_name() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation_SegmentGenericBegin::clear_has_name() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation_SegmentGenericBegin::clear_name() {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& Operation_SegmentGenericBegin::name() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentGenericBegin.name)
+  return *name_;
+}
+inline void Operation_SegmentGenericBegin::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentGenericBegin.name)
+}
+inline void Operation_SegmentGenericBegin::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.SegmentGenericBegin.name)
+}
+inline void Operation_SegmentGenericBegin::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.SegmentGenericBegin.name)
+}
+inline ::std::string* Operation_SegmentGenericBegin::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.SegmentGenericBegin.name)
+  return name_;
+}
+inline ::std::string* Operation_SegmentGenericBegin::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_SegmentGenericBegin::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.SegmentGenericBegin.name)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_SegmentDatastoreBegin
+
+// required uint64 transaction_id = 1;
+inline bool Operation_SegmentDatastoreBegin::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_SegmentDatastoreBegin::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_transaction_id() {
+  transaction_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_transaction_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentDatastoreBegin::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentDatastoreBegin.transaction_id)
+  return transaction_id_;
+}
+inline void Operation_SegmentDatastoreBegin::set_transaction_id(::google::protobuf::uint64 value) {
+  set_has_transaction_id();
+  transaction_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentDatastoreBegin.transaction_id)
+}
+
+// optional uint64 parent_segment_id = 2;
+inline bool Operation_SegmentDatastoreBegin::has_parent_segment_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_SegmentDatastoreBegin::set_has_parent_segment_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_has_parent_segment_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_parent_segment_id() {
+  parent_segment_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_parent_segment_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentDatastoreBegin::parent_segment_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentDatastoreBegin.parent_segment_id)
+  return parent_segment_id_;
+}
+inline void Operation_SegmentDatastoreBegin::set_parent_segment_id(::google::protobuf::uint64 value) {
+  set_has_parent_segment_id();
+  parent_segment_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentDatastoreBegin.parent_segment_id)
+}
+
+// required string table = 3;
+inline bool Operation_SegmentDatastoreBegin::has_table() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation_SegmentDatastoreBegin::set_has_table() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_has_table() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_table() {
+  if (table_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    table_->clear();
+  }
+  clear_has_table();
+}
+inline const ::std::string& Operation_SegmentDatastoreBegin::table() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentDatastoreBegin.table)
+  return *table_;
+}
+inline void Operation_SegmentDatastoreBegin::set_table(const ::std::string& value) {
+  set_has_table();
+  if (table_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    table_ = new ::std::string;
+  }
+  table_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentDatastoreBegin.table)
+}
+inline void Operation_SegmentDatastoreBegin::set_table(const char* value) {
+  set_has_table();
+  if (table_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    table_ = new ::std::string;
+  }
+  table_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.SegmentDatastoreBegin.table)
+}
+inline void Operation_SegmentDatastoreBegin::set_table(const char* value, size_t size) {
+  set_has_table();
+  if (table_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    table_ = new ::std::string;
+  }
+  table_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.SegmentDatastoreBegin.table)
+}
+inline ::std::string* Operation_SegmentDatastoreBegin::mutable_table() {
+  set_has_table();
+  if (table_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    table_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.SegmentDatastoreBegin.table)
+  return table_;
+}
+inline ::std::string* Operation_SegmentDatastoreBegin::release_table() {
+  clear_has_table();
+  if (table_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = table_;
+    table_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_SegmentDatastoreBegin::set_allocated_table(::std::string* table) {
+  if (table_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete table_;
+  }
+  if (table) {
+    set_has_table();
+    table_ = table;
+  } else {
+    clear_has_table();
+    table_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.SegmentDatastoreBegin.table)
+}
+
+// required .operation_msg.Operation.SegmentDatastoreOperation operation = 4;
+inline bool Operation_SegmentDatastoreBegin::has_operation() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Operation_SegmentDatastoreBegin::set_has_operation() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_has_operation() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_operation() {
+  operation_ = 1;
+  clear_has_operation();
+}
+inline ::operation_msg::Operation_SegmentDatastoreOperation Operation_SegmentDatastoreBegin::operation() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentDatastoreBegin.operation)
+  return static_cast< ::operation_msg::Operation_SegmentDatastoreOperation >(operation_);
+}
+inline void Operation_SegmentDatastoreBegin::set_operation(::operation_msg::Operation_SegmentDatastoreOperation value) {
+  assert(::operation_msg::Operation_SegmentDatastoreOperation_IsValid(value));
+  set_has_operation();
+  operation_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentDatastoreBegin.operation)
+}
+
+// required string sql = 5;
+inline bool Operation_SegmentDatastoreBegin::has_sql() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Operation_SegmentDatastoreBegin::set_has_sql() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_has_sql() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Operation_SegmentDatastoreBegin::clear_sql() {
+  if (sql_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    sql_->clear();
+  }
+  clear_has_sql();
+}
+inline const ::std::string& Operation_SegmentDatastoreBegin::sql() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentDatastoreBegin.sql)
+  return *sql_;
+}
+inline void Operation_SegmentDatastoreBegin::set_sql(const ::std::string& value) {
+  set_has_sql();
+  if (sql_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    sql_ = new ::std::string;
+  }
+  sql_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentDatastoreBegin.sql)
+}
+inline void Operation_SegmentDatastoreBegin::set_sql(const char* value) {
+  set_has_sql();
+  if (sql_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    sql_ = new ::std::string;
+  }
+  sql_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.SegmentDatastoreBegin.sql)
+}
+inline void Operation_SegmentDatastoreBegin::set_sql(const char* value, size_t size) {
+  set_has_sql();
+  if (sql_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    sql_ = new ::std::string;
+  }
+  sql_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.SegmentDatastoreBegin.sql)
+}
+inline ::std::string* Operation_SegmentDatastoreBegin::mutable_sql() {
+  set_has_sql();
+  if (sql_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    sql_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.SegmentDatastoreBegin.sql)
+  return sql_;
+}
+inline ::std::string* Operation_SegmentDatastoreBegin::release_sql() {
+  clear_has_sql();
+  if (sql_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = sql_;
+    sql_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_SegmentDatastoreBegin::set_allocated_sql(::std::string* sql) {
+  if (sql_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete sql_;
+  }
+  if (sql) {
+    set_has_sql();
+    sql_ = sql;
+  } else {
+    clear_has_sql();
+    sql_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.SegmentDatastoreBegin.sql)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_SegmentExternalBegin
+
+// required uint64 transaction_id = 1;
+inline bool Operation_SegmentExternalBegin::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_SegmentExternalBegin::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_SegmentExternalBegin::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_SegmentExternalBegin::clear_transaction_id() {
+  transaction_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_transaction_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentExternalBegin::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentExternalBegin.transaction_id)
+  return transaction_id_;
+}
+inline void Operation_SegmentExternalBegin::set_transaction_id(::google::protobuf::uint64 value) {
+  set_has_transaction_id();
+  transaction_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentExternalBegin.transaction_id)
+}
+
+// optional uint64 parent_segment_id = 2;
+inline bool Operation_SegmentExternalBegin::has_parent_segment_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_SegmentExternalBegin::set_has_parent_segment_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_SegmentExternalBegin::clear_has_parent_segment_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_SegmentExternalBegin::clear_parent_segment_id() {
+  parent_segment_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_parent_segment_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentExternalBegin::parent_segment_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentExternalBegin.parent_segment_id)
+  return parent_segment_id_;
+}
+inline void Operation_SegmentExternalBegin::set_parent_segment_id(::google::protobuf::uint64 value) {
+  set_has_parent_segment_id();
+  parent_segment_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentExternalBegin.parent_segment_id)
+}
+
+// required string host = 3;
+inline bool Operation_SegmentExternalBegin::has_host() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation_SegmentExternalBegin::set_has_host() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation_SegmentExternalBegin::clear_has_host() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation_SegmentExternalBegin::clear_host() {
+  if (host_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    host_->clear();
+  }
+  clear_has_host();
+}
+inline const ::std::string& Operation_SegmentExternalBegin::host() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentExternalBegin.host)
+  return *host_;
+}
+inline void Operation_SegmentExternalBegin::set_host(const ::std::string& value) {
+  set_has_host();
+  if (host_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    host_ = new ::std::string;
+  }
+  host_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentExternalBegin.host)
+}
+inline void Operation_SegmentExternalBegin::set_host(const char* value) {
+  set_has_host();
+  if (host_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    host_ = new ::std::string;
+  }
+  host_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.SegmentExternalBegin.host)
+}
+inline void Operation_SegmentExternalBegin::set_host(const char* value, size_t size) {
+  set_has_host();
+  if (host_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    host_ = new ::std::string;
+  }
+  host_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.SegmentExternalBegin.host)
+}
+inline ::std::string* Operation_SegmentExternalBegin::mutable_host() {
+  set_has_host();
+  if (host_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    host_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.SegmentExternalBegin.host)
+  return host_;
+}
+inline ::std::string* Operation_SegmentExternalBegin::release_host() {
+  clear_has_host();
+  if (host_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = host_;
+    host_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_SegmentExternalBegin::set_allocated_host(::std::string* host) {
+  if (host_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete host_;
+  }
+  if (host) {
+    set_has_host();
+    host_ = host;
+  } else {
+    clear_has_host();
+    host_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.SegmentExternalBegin.host)
+}
+
+// required string name = 4;
+inline bool Operation_SegmentExternalBegin::has_name() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Operation_SegmentExternalBegin::set_has_name() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Operation_SegmentExternalBegin::clear_has_name() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Operation_SegmentExternalBegin::clear_name() {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& Operation_SegmentExternalBegin::name() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentExternalBegin.name)
+  return *name_;
+}
+inline void Operation_SegmentExternalBegin::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentExternalBegin.name)
+}
+inline void Operation_SegmentExternalBegin::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+  // @@protoc_insertion_point(field_set_char:operation_msg.Operation.SegmentExternalBegin.name)
+}
+inline void Operation_SegmentExternalBegin::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:operation_msg.Operation.SegmentExternalBegin.name)
+}
+inline ::std::string* Operation_SegmentExternalBegin::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    name_ = new ::std::string;
+  }
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.SegmentExternalBegin.name)
+  return name_;
+}
+inline ::std::string* Operation_SegmentExternalBegin::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    return temp;
+  }
+}
+inline void Operation_SegmentExternalBegin::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.SegmentExternalBegin.name)
+}
+
+// -------------------------------------------------------------------
+
+// Operation_SegmentEnd
+
+// required uint64 transaction_id = 1;
+inline bool Operation_SegmentEnd::has_transaction_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_SegmentEnd::set_has_transaction_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_SegmentEnd::clear_has_transaction_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_SegmentEnd::clear_transaction_id() {
+  transaction_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_transaction_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentEnd::transaction_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentEnd.transaction_id)
+  return transaction_id_;
+}
+inline void Operation_SegmentEnd::set_transaction_id(::google::protobuf::uint64 value) {
+  set_has_transaction_id();
+  transaction_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentEnd.transaction_id)
+}
+
+// required uint64 segment_id = 2;
+inline bool Operation_SegmentEnd::has_segment_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_SegmentEnd::set_has_segment_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_SegmentEnd::clear_has_segment_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_SegmentEnd::clear_segment_id() {
+  segment_id_ = GOOGLE_ULONGLONG(0);
+  clear_has_segment_id();
+}
+inline ::google::protobuf::uint64 Operation_SegmentEnd::segment_id() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.SegmentEnd.segment_id)
+  return segment_id_;
+}
+inline void Operation_SegmentEnd::set_segment_id(::google::protobuf::uint64 value) {
+  set_has_segment_id();
+  segment_id_ = value;
+  // @@protoc_insertion_point(field_set:operation_msg.Operation.SegmentEnd.segment_id)
 }
 
 // -------------------------------------------------------------------
@@ -1647,15 +4109,179 @@ inline void Operation::set_allocated_init(::operation_msg::Operation_Init* init)
   // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.init)
 }
 
-// optional .operation_msg.Operation.TransactionBegin transaction_begin = 3;
-inline bool Operation::has_transaction_begin() const {
+// optional .operation_msg.Operation.EnableInstrumentation enable_instrumentation = 3;
+inline bool Operation::has_enable_instrumentation() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void Operation::set_has_transaction_begin() {
+inline void Operation::set_has_enable_instrumentation() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void Operation::clear_has_transaction_begin() {
+inline void Operation::clear_has_enable_instrumentation() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation::clear_enable_instrumentation() {
+  if (enable_instrumentation_ != NULL) enable_instrumentation_->::operation_msg::Operation_EnableInstrumentation::Clear();
+  clear_has_enable_instrumentation();
+}
+inline const ::operation_msg::Operation_EnableInstrumentation& Operation::enable_instrumentation() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.enable_instrumentation)
+  return enable_instrumentation_ != NULL ? *enable_instrumentation_ : *default_instance_->enable_instrumentation_;
+}
+inline ::operation_msg::Operation_EnableInstrumentation* Operation::mutable_enable_instrumentation() {
+  set_has_enable_instrumentation();
+  if (enable_instrumentation_ == NULL) enable_instrumentation_ = new ::operation_msg::Operation_EnableInstrumentation;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.enable_instrumentation)
+  return enable_instrumentation_;
+}
+inline ::operation_msg::Operation_EnableInstrumentation* Operation::release_enable_instrumentation() {
+  clear_has_enable_instrumentation();
+  ::operation_msg::Operation_EnableInstrumentation* temp = enable_instrumentation_;
+  enable_instrumentation_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_enable_instrumentation(::operation_msg::Operation_EnableInstrumentation* enable_instrumentation) {
+  delete enable_instrumentation_;
+  enable_instrumentation_ = enable_instrumentation;
+  if (enable_instrumentation) {
+    set_has_enable_instrumentation();
+  } else {
+    clear_has_enable_instrumentation();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.enable_instrumentation)
+}
+
+// optional .operation_msg.Operation.RecordMetric record_metric = 4;
+inline bool Operation::has_record_metric() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Operation::set_has_record_metric() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Operation::clear_has_record_metric() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Operation::clear_record_metric() {
+  if (record_metric_ != NULL) record_metric_->::operation_msg::Operation_RecordMetric::Clear();
+  clear_has_record_metric();
+}
+inline const ::operation_msg::Operation_RecordMetric& Operation::record_metric() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.record_metric)
+  return record_metric_ != NULL ? *record_metric_ : *default_instance_->record_metric_;
+}
+inline ::operation_msg::Operation_RecordMetric* Operation::mutable_record_metric() {
+  set_has_record_metric();
+  if (record_metric_ == NULL) record_metric_ = new ::operation_msg::Operation_RecordMetric;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.record_metric)
+  return record_metric_;
+}
+inline ::operation_msg::Operation_RecordMetric* Operation::release_record_metric() {
+  clear_has_record_metric();
+  ::operation_msg::Operation_RecordMetric* temp = record_metric_;
+  record_metric_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_record_metric(::operation_msg::Operation_RecordMetric* record_metric) {
+  delete record_metric_;
+  record_metric_ = record_metric;
+  if (record_metric) {
+    set_has_record_metric();
+  } else {
+    clear_has_record_metric();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.record_metric)
+}
+
+// optional .operation_msg.Operation.RecondCPUUsage record_cpu_usage = 5;
+inline bool Operation::has_record_cpu_usage() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Operation::set_has_record_cpu_usage() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Operation::clear_has_record_cpu_usage() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Operation::clear_record_cpu_usage() {
+  if (record_cpu_usage_ != NULL) record_cpu_usage_->::operation_msg::Operation_RecondCPUUsage::Clear();
+  clear_has_record_cpu_usage();
+}
+inline const ::operation_msg::Operation_RecondCPUUsage& Operation::record_cpu_usage() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.record_cpu_usage)
+  return record_cpu_usage_ != NULL ? *record_cpu_usage_ : *default_instance_->record_cpu_usage_;
+}
+inline ::operation_msg::Operation_RecondCPUUsage* Operation::mutable_record_cpu_usage() {
+  set_has_record_cpu_usage();
+  if (record_cpu_usage_ == NULL) record_cpu_usage_ = new ::operation_msg::Operation_RecondCPUUsage;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.record_cpu_usage)
+  return record_cpu_usage_;
+}
+inline ::operation_msg::Operation_RecondCPUUsage* Operation::release_record_cpu_usage() {
+  clear_has_record_cpu_usage();
+  ::operation_msg::Operation_RecondCPUUsage* temp = record_cpu_usage_;
+  record_cpu_usage_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_record_cpu_usage(::operation_msg::Operation_RecondCPUUsage* record_cpu_usage) {
+  delete record_cpu_usage_;
+  record_cpu_usage_ = record_cpu_usage;
+  if (record_cpu_usage) {
+    set_has_record_cpu_usage();
+  } else {
+    clear_has_record_cpu_usage();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.record_cpu_usage)
+}
+
+// optional .operation_msg.Operation.RecondMemoryUsage record_memory_usage = 6;
+inline bool Operation::has_record_memory_usage() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Operation::set_has_record_memory_usage() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Operation::clear_has_record_memory_usage() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Operation::clear_record_memory_usage() {
+  if (record_memory_usage_ != NULL) record_memory_usage_->::operation_msg::Operation_RecondMemoryUsage::Clear();
+  clear_has_record_memory_usage();
+}
+inline const ::operation_msg::Operation_RecondMemoryUsage& Operation::record_memory_usage() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.record_memory_usage)
+  return record_memory_usage_ != NULL ? *record_memory_usage_ : *default_instance_->record_memory_usage_;
+}
+inline ::operation_msg::Operation_RecondMemoryUsage* Operation::mutable_record_memory_usage() {
+  set_has_record_memory_usage();
+  if (record_memory_usage_ == NULL) record_memory_usage_ = new ::operation_msg::Operation_RecondMemoryUsage;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.record_memory_usage)
+  return record_memory_usage_;
+}
+inline ::operation_msg::Operation_RecondMemoryUsage* Operation::release_record_memory_usage() {
+  clear_has_record_memory_usage();
+  ::operation_msg::Operation_RecondMemoryUsage* temp = record_memory_usage_;
+  record_memory_usage_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_record_memory_usage(::operation_msg::Operation_RecondMemoryUsage* record_memory_usage) {
+  delete record_memory_usage_;
+  record_memory_usage_ = record_memory_usage;
+  if (record_memory_usage) {
+    set_has_record_memory_usage();
+  } else {
+    clear_has_record_memory_usage();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.record_memory_usage)
+}
+
+// optional .operation_msg.Operation.TransactionBegin transaction_begin = 7;
+inline bool Operation::has_transaction_begin() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Operation::set_has_transaction_begin() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Operation::clear_has_transaction_begin() {
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void Operation::clear_transaction_begin() {
   if (transaction_begin_ != NULL) transaction_begin_->::operation_msg::Operation_TransactionBegin::Clear();
@@ -1688,15 +4314,15 @@ inline void Operation::set_allocated_transaction_begin(::operation_msg::Operatio
   // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.transaction_begin)
 }
 
-// optional .operation_msg.Operation.TransactionEnd transaction_end = 4;
+// optional .operation_msg.Operation.TransactionEnd transaction_end = 8;
 inline bool Operation::has_transaction_end() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void Operation::set_has_transaction_end() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void Operation::clear_has_transaction_end() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void Operation::clear_transaction_end() {
   if (transaction_end_ != NULL) transaction_end_->::operation_msg::Operation_TransactionEnd::Clear();
@@ -1729,45 +4355,250 @@ inline void Operation::set_allocated_transaction_end(::operation_msg::Operation_
   // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.transaction_end)
 }
 
-// optional .operation_msg.Operation.NoticeError notice_error = 5;
-inline bool Operation::has_notice_error() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+// optional .operation_msg.Operation.TransactionNoticeError transaction_notice_error = 9;
+inline bool Operation::has_transaction_notice_error() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
-inline void Operation::set_has_notice_error() {
-  _has_bits_[0] |= 0x00000010u;
+inline void Operation::set_has_transaction_notice_error() {
+  _has_bits_[0] |= 0x00000100u;
 }
-inline void Operation::clear_has_notice_error() {
-  _has_bits_[0] &= ~0x00000010u;
+inline void Operation::clear_has_transaction_notice_error() {
+  _has_bits_[0] &= ~0x00000100u;
 }
-inline void Operation::clear_notice_error() {
-  if (notice_error_ != NULL) notice_error_->::operation_msg::Operation_NoticeError::Clear();
-  clear_has_notice_error();
+inline void Operation::clear_transaction_notice_error() {
+  if (transaction_notice_error_ != NULL) transaction_notice_error_->::operation_msg::Operation_TransactionNoticeError::Clear();
+  clear_has_transaction_notice_error();
 }
-inline const ::operation_msg::Operation_NoticeError& Operation::notice_error() const {
-  // @@protoc_insertion_point(field_get:operation_msg.Operation.notice_error)
-  return notice_error_ != NULL ? *notice_error_ : *default_instance_->notice_error_;
+inline const ::operation_msg::Operation_TransactionNoticeError& Operation::transaction_notice_error() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.transaction_notice_error)
+  return transaction_notice_error_ != NULL ? *transaction_notice_error_ : *default_instance_->transaction_notice_error_;
 }
-inline ::operation_msg::Operation_NoticeError* Operation::mutable_notice_error() {
-  set_has_notice_error();
-  if (notice_error_ == NULL) notice_error_ = new ::operation_msg::Operation_NoticeError;
-  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.notice_error)
-  return notice_error_;
+inline ::operation_msg::Operation_TransactionNoticeError* Operation::mutable_transaction_notice_error() {
+  set_has_transaction_notice_error();
+  if (transaction_notice_error_ == NULL) transaction_notice_error_ = new ::operation_msg::Operation_TransactionNoticeError;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.transaction_notice_error)
+  return transaction_notice_error_;
 }
-inline ::operation_msg::Operation_NoticeError* Operation::release_notice_error() {
-  clear_has_notice_error();
-  ::operation_msg::Operation_NoticeError* temp = notice_error_;
-  notice_error_ = NULL;
+inline ::operation_msg::Operation_TransactionNoticeError* Operation::release_transaction_notice_error() {
+  clear_has_transaction_notice_error();
+  ::operation_msg::Operation_TransactionNoticeError* temp = transaction_notice_error_;
+  transaction_notice_error_ = NULL;
   return temp;
 }
-inline void Operation::set_allocated_notice_error(::operation_msg::Operation_NoticeError* notice_error) {
-  delete notice_error_;
-  notice_error_ = notice_error;
-  if (notice_error) {
-    set_has_notice_error();
+inline void Operation::set_allocated_transaction_notice_error(::operation_msg::Operation_TransactionNoticeError* transaction_notice_error) {
+  delete transaction_notice_error_;
+  transaction_notice_error_ = transaction_notice_error;
+  if (transaction_notice_error) {
+    set_has_transaction_notice_error();
   } else {
-    clear_has_notice_error();
+    clear_has_transaction_notice_error();
   }
-  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.notice_error)
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.transaction_notice_error)
+}
+
+// optional .operation_msg.Operation.TransactionAddAttribute transaction_add_attribute = 10;
+inline bool Operation::has_transaction_add_attribute() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Operation::set_has_transaction_add_attribute() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Operation::clear_has_transaction_add_attribute() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Operation::clear_transaction_add_attribute() {
+  if (transaction_add_attribute_ != NULL) transaction_add_attribute_->::operation_msg::Operation_TransactionAddAttribute::Clear();
+  clear_has_transaction_add_attribute();
+}
+inline const ::operation_msg::Operation_TransactionAddAttribute& Operation::transaction_add_attribute() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.transaction_add_attribute)
+  return transaction_add_attribute_ != NULL ? *transaction_add_attribute_ : *default_instance_->transaction_add_attribute_;
+}
+inline ::operation_msg::Operation_TransactionAddAttribute* Operation::mutable_transaction_add_attribute() {
+  set_has_transaction_add_attribute();
+  if (transaction_add_attribute_ == NULL) transaction_add_attribute_ = new ::operation_msg::Operation_TransactionAddAttribute;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.transaction_add_attribute)
+  return transaction_add_attribute_;
+}
+inline ::operation_msg::Operation_TransactionAddAttribute* Operation::release_transaction_add_attribute() {
+  clear_has_transaction_add_attribute();
+  ::operation_msg::Operation_TransactionAddAttribute* temp = transaction_add_attribute_;
+  transaction_add_attribute_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_transaction_add_attribute(::operation_msg::Operation_TransactionAddAttribute* transaction_add_attribute) {
+  delete transaction_add_attribute_;
+  transaction_add_attribute_ = transaction_add_attribute;
+  if (transaction_add_attribute) {
+    set_has_transaction_add_attribute();
+  } else {
+    clear_has_transaction_add_attribute();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.transaction_add_attribute)
+}
+
+// optional .operation_msg.Operation.SegmentGenericBegin segment_generic_begin = 11;
+inline bool Operation::has_segment_generic_begin() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Operation::set_has_segment_generic_begin() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Operation::clear_has_segment_generic_begin() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Operation::clear_segment_generic_begin() {
+  if (segment_generic_begin_ != NULL) segment_generic_begin_->::operation_msg::Operation_SegmentGenericBegin::Clear();
+  clear_has_segment_generic_begin();
+}
+inline const ::operation_msg::Operation_SegmentGenericBegin& Operation::segment_generic_begin() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.segment_generic_begin)
+  return segment_generic_begin_ != NULL ? *segment_generic_begin_ : *default_instance_->segment_generic_begin_;
+}
+inline ::operation_msg::Operation_SegmentGenericBegin* Operation::mutable_segment_generic_begin() {
+  set_has_segment_generic_begin();
+  if (segment_generic_begin_ == NULL) segment_generic_begin_ = new ::operation_msg::Operation_SegmentGenericBegin;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.segment_generic_begin)
+  return segment_generic_begin_;
+}
+inline ::operation_msg::Operation_SegmentGenericBegin* Operation::release_segment_generic_begin() {
+  clear_has_segment_generic_begin();
+  ::operation_msg::Operation_SegmentGenericBegin* temp = segment_generic_begin_;
+  segment_generic_begin_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_segment_generic_begin(::operation_msg::Operation_SegmentGenericBegin* segment_generic_begin) {
+  delete segment_generic_begin_;
+  segment_generic_begin_ = segment_generic_begin;
+  if (segment_generic_begin) {
+    set_has_segment_generic_begin();
+  } else {
+    clear_has_segment_generic_begin();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.segment_generic_begin)
+}
+
+// optional .operation_msg.Operation.SegmentDatastoreBegin segment_datastore_begin = 12;
+inline bool Operation::has_segment_datastore_begin() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Operation::set_has_segment_datastore_begin() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Operation::clear_has_segment_datastore_begin() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Operation::clear_segment_datastore_begin() {
+  if (segment_datastore_begin_ != NULL) segment_datastore_begin_->::operation_msg::Operation_SegmentDatastoreBegin::Clear();
+  clear_has_segment_datastore_begin();
+}
+inline const ::operation_msg::Operation_SegmentDatastoreBegin& Operation::segment_datastore_begin() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.segment_datastore_begin)
+  return segment_datastore_begin_ != NULL ? *segment_datastore_begin_ : *default_instance_->segment_datastore_begin_;
+}
+inline ::operation_msg::Operation_SegmentDatastoreBegin* Operation::mutable_segment_datastore_begin() {
+  set_has_segment_datastore_begin();
+  if (segment_datastore_begin_ == NULL) segment_datastore_begin_ = new ::operation_msg::Operation_SegmentDatastoreBegin;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.segment_datastore_begin)
+  return segment_datastore_begin_;
+}
+inline ::operation_msg::Operation_SegmentDatastoreBegin* Operation::release_segment_datastore_begin() {
+  clear_has_segment_datastore_begin();
+  ::operation_msg::Operation_SegmentDatastoreBegin* temp = segment_datastore_begin_;
+  segment_datastore_begin_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_segment_datastore_begin(::operation_msg::Operation_SegmentDatastoreBegin* segment_datastore_begin) {
+  delete segment_datastore_begin_;
+  segment_datastore_begin_ = segment_datastore_begin;
+  if (segment_datastore_begin) {
+    set_has_segment_datastore_begin();
+  } else {
+    clear_has_segment_datastore_begin();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.segment_datastore_begin)
+}
+
+// optional .operation_msg.Operation.SegmentExternalBegin segment_external_begin = 13;
+inline bool Operation::has_segment_external_begin() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Operation::set_has_segment_external_begin() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Operation::clear_has_segment_external_begin() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Operation::clear_segment_external_begin() {
+  if (segment_external_begin_ != NULL) segment_external_begin_->::operation_msg::Operation_SegmentExternalBegin::Clear();
+  clear_has_segment_external_begin();
+}
+inline const ::operation_msg::Operation_SegmentExternalBegin& Operation::segment_external_begin() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.segment_external_begin)
+  return segment_external_begin_ != NULL ? *segment_external_begin_ : *default_instance_->segment_external_begin_;
+}
+inline ::operation_msg::Operation_SegmentExternalBegin* Operation::mutable_segment_external_begin() {
+  set_has_segment_external_begin();
+  if (segment_external_begin_ == NULL) segment_external_begin_ = new ::operation_msg::Operation_SegmentExternalBegin;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.segment_external_begin)
+  return segment_external_begin_;
+}
+inline ::operation_msg::Operation_SegmentExternalBegin* Operation::release_segment_external_begin() {
+  clear_has_segment_external_begin();
+  ::operation_msg::Operation_SegmentExternalBegin* temp = segment_external_begin_;
+  segment_external_begin_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_segment_external_begin(::operation_msg::Operation_SegmentExternalBegin* segment_external_begin) {
+  delete segment_external_begin_;
+  segment_external_begin_ = segment_external_begin;
+  if (segment_external_begin) {
+    set_has_segment_external_begin();
+  } else {
+    clear_has_segment_external_begin();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.segment_external_begin)
+}
+
+// optional .operation_msg.Operation.SegmentEnd segment_end = 14;
+inline bool Operation::has_segment_end() const {
+  return (_has_bits_[0] & 0x00002000u) != 0;
+}
+inline void Operation::set_has_segment_end() {
+  _has_bits_[0] |= 0x00002000u;
+}
+inline void Operation::clear_has_segment_end() {
+  _has_bits_[0] &= ~0x00002000u;
+}
+inline void Operation::clear_segment_end() {
+  if (segment_end_ != NULL) segment_end_->::operation_msg::Operation_SegmentEnd::Clear();
+  clear_has_segment_end();
+}
+inline const ::operation_msg::Operation_SegmentEnd& Operation::segment_end() const {
+  // @@protoc_insertion_point(field_get:operation_msg.Operation.segment_end)
+  return segment_end_ != NULL ? *segment_end_ : *default_instance_->segment_end_;
+}
+inline ::operation_msg::Operation_SegmentEnd* Operation::mutable_segment_end() {
+  set_has_segment_end();
+  if (segment_end_ == NULL) segment_end_ = new ::operation_msg::Operation_SegmentEnd;
+  // @@protoc_insertion_point(field_mutable:operation_msg.Operation.segment_end)
+  return segment_end_;
+}
+inline ::operation_msg::Operation_SegmentEnd* Operation::release_segment_end() {
+  clear_has_segment_end();
+  ::operation_msg::Operation_SegmentEnd* temp = segment_end_;
+  segment_end_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_segment_end(::operation_msg::Operation_SegmentEnd* segment_end) {
+  delete segment_end_;
+  segment_end_ = segment_end;
+  if (segment_end) {
+    set_has_segment_end();
+  } else {
+    clear_has_segment_end();
+  }
+  // @@protoc_insertion_point(field_set_allocated:operation_msg.Operation.segment_end)
 }
 
 
@@ -1783,6 +4614,11 @@ template <> struct is_proto_enum< ::operation_msg::Operation_OperationType> : ::
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::operation_msg::Operation_OperationType>() {
   return ::operation_msg::Operation_OperationType_descriptor();
+}
+template <> struct is_proto_enum< ::operation_msg::Operation_SegmentDatastoreOperation> : ::google::protobuf::internal::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::operation_msg::Operation_SegmentDatastoreOperation>() {
+  return ::operation_msg::Operation_SegmentDatastoreOperation_descriptor();
 }
 
 }  // namespace google

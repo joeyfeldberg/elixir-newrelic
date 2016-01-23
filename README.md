@@ -56,12 +56,13 @@ config :elixir_newrelic,
 
 ```elixir
 {:ok, server} = ElixirNewrelic.start_link
-{:ok, init} = ElixirNewrelic.Transaction.init(newrelic)
-{:ok, response} = ElixirNewrelic.Transaction.transaction_begin(server, "name")
+{:ok, init} = ElixirNewrelic.Api.Agent.init(server)
+{:ok, response} = ElixirNewrelic.Api.Transaction.transaction_begin(server, "test")
 exception_type = "Error"
 error_message = "Something went wrong"
 stack_trace = "..."
 stack_frame_delimiter = "\n"
-{:ok, response} = ElixirNewrelic.Transaction.transaction_notice_error(server, response.transaction_id, exception_type, error_message, stack_trace, stack_frame_delimiter)
-{:ok, response} = ElixirNewrelic.Transaction.transaction_end(server, response.transaction_id)
+transaction_id = response.transaction_id
+{:ok, response} = ElixirNewrelic.Api.Transaction.transaction_notice_error(server, transaction_id, exception_type, error_message, stack_trace, stack_frame_delimiter)
+{:ok, response} = ElixirNewrelic.Api.Transaction.transaction_end(server, transaction_id)
 ```

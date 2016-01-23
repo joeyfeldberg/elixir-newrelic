@@ -3,7 +3,9 @@ package operation_msg;
 message Response {
   required bool error = 1;
   required int32 code = 2;
-  optional uint64 transaction_id = 3;
+  optional string error_msg = 3;
+  optional uint64 transaction_id = 4;
+  optional uint64 segment_id = 5;
 }
 
 message Operation {
@@ -14,15 +16,37 @@ message Operation {
     required string language_version = 4;
   }
 
+  message EnableInstrumentation {
+    required bool set_enabled = 1;
+  }
+
+  message RecordMetric {
+    required string name = 1;
+    required double value = 2;
+  }
+
+  message RecondCPUUsage {
+    required double cpu_user_time_seconds = 1;
+    required double cpu_usage_percent = 2;
+  }
+
+  message RecondMemoryUsage {
+    required double memory_megabytes = 1;
+  }
+
   message TransactionBegin {
     required string name = 1;
+    optional bool set_type_web = 2;
+    optional string category = 3;
+    optional string request_url = 4;
+    optional int32 max_trace_segments = 5;
   }
 
   message TransactionEnd {
     required uint64 transaction_id = 1;
   }
 
-  message NoticeError {
+  message TransactionNoticeError {
     required uint64 transaction_id = 1;
     required string exception_type = 2;
     required string error_message = 3;
@@ -30,16 +54,74 @@ message Operation {
     required string stack_frame_delimiter = 5;
   }
 
+  message TransactionAddAttribute {
+    required uint64 transaction_id = 1;
+    required string name = 2;
+    required string value = 3;
+  }
+
+  message SegmentGenericBegin {
+    required uint64 transaction_id = 1;
+    optional uint64 parent_segment_id = 2;
+    required string name = 3;
+  }
+
+  message SegmentDatastoreBegin {
+    required uint64 transaction_id = 1;
+    optional uint64 parent_segment_id = 2;
+    required string table = 3;
+    required SegmentDatastoreOperation operation = 4;
+    required string sql = 5;
+  }
+
+  message SegmentExternalBegin {
+    required uint64 transaction_id = 1;
+    optional uint64 parent_segment_id = 2;
+    required string host = 3;
+    required string name = 4;
+  }
+
+  message SegmentEnd {
+    required uint64 transaction_id = 1;
+    required uint64 segment_id = 2;
+  }
+
   enum OperationType {
     INIT = 1;
-    TRANSACTION_BEGIN = 2;
-    TRANSACTION_END = 3;
-    TRANSACTION_NOTICE_ERROR = 4;
+    ENABLE_INSTRUMENTATION = 2;
+    RECORD_METRIC = 3;
+    RECORD_CPU_USAGE = 4;
+    RECORD_MEMORY_USAGE = 5;
+    TRANSACTION_BEGIN = 6;
+    TRANSACTION_END = 7;
+    TRANSACTION_NOTICE_ERROR = 8;
+    TRANSACTION_ADD_ATTRIBUTE = 9;
+    SEGMENT_GENERIC_BEGIN = 10;
+    SEGMENT_DATASTORE_BEGIN = 11;
+    SEGMENT_EXTERNAL_BEGIN = 12;
+    SEGMENT_END = 13;
+  }
+
+  enum SegmentDatastoreOperation {
+    SELECT = 1;
+    INSERT = 2;
+    UPDATE = 3;
+    DELETE = 4;
   }
 
   required OperationType type = 1;
   optional Init init = 2;
-  optional TransactionBegin transaction_begin = 3;
-  optional TransactionEnd transaction_end = 4;
-  optional NoticeError notice_error = 5;
+  optional EnableInstrumentation enable_instrumentation = 3;
+  optional RecordMetric record_metric = 4;
+  optional RecondCPUUsage record_cpu_usage = 5;
+  optional RecondMemoryUsage record_memory_usage = 6;
+  optional TransactionBegin transaction_begin = 7;
+  optional TransactionEnd transaction_end = 8;
+  optional TransactionNoticeError transaction_notice_error = 9;
+  optional TransactionAddAttribute transaction_add_attribute = 10;
+  optional SegmentGenericBegin segment_generic_begin = 11;
+  optional SegmentDatastoreBegin segment_datastore_begin = 12;
+  optional SegmentExternalBegin segment_external_begin = 13;
+  optional SegmentEnd segment_end = 14;
+
 }
